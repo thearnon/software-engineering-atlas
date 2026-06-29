@@ -1,21 +1,194 @@
-## ใช้จริงในระบบองค์กรยังไง
+## RBAC คืออะไร
 
-RBAC หรือ Role-Based Access Control คือวิธีจัดสิทธิ์โดยให้ผู้ใช้มี role แล้ว role นั้นกำหนดว่า action ไหนทำได้หรือทำไม่ได้
+RBAC หรือ Role-Based Access Control คือวิธีจัดสิทธิ์โดยให้ผู้ใช้ได้รับ role แล้ว role นั้นกำหนดว่า action ไหนทำได้ ทำไม่ได้ หรือทำได้แบบมีเงื่อนไข
 
-ในระบบ enterprise internal web application เรื่องนี้มักเจอกับ approval workflow, dashboard, report, audit log, และหน้าจอ admin ที่ต้องแยกว่าใครขอดูข้อมูลได้ ใครอนุมัติได้ และใครแก้ configuration ได้
+แกนของ RBAC คือไม่ผูก permission เข้ากับ user ทีละคน แต่ผูก permission เข้ากับ role แล้วค่อยให้ user ได้ role ตามหน้าที่ในระบบ
 
-<Callout type="enterprise" title="บริบท enterprise">
-  ในระบบภายในองค์กร RBAC มักต้องไปคู่กับ approval workflow และ audit log เสมอ
-  ออกแบบทั้งสามอย่างพร้อมกันตั้งแต่แรกจะลดงานแก้ย้อนหลังได้มาก
+คำถามหลักของ RBAC คือ "ในบริบทนี้ user มี role อะไร และ role นั้นทำ action นี้ได้หรือไม่"
+
+<Callout type="definition" title="จำสั้น ๆ">
+  RBAC แยก user, role และ permission ออกจากกัน ทำให้ระบบจัดสิทธิ์ได้เป็นกลุ่ม
+  review ได้ง่าย และลด logic กระจัดกระจายตามหน้าจอ
 </Callout>
 
-## สิ่งที่ควรระวัง
+## ทำไม RBAC สำคัญในระบบองค์กร
 
-- อย่าเริ่มจาก role เยอะเกินไป
-- อย่า hard-code permission ไว้ใน UI อย่างเดียว
-- อย่าลืม audit log สำหรับ action สำคัญ
-- ถ้าระบบมีหลายสาขาหรือหลายแผนก อาจต้องมี scope เพิ่มจาก role
+ใน enterprise internal web application สิทธิ์ไม่ได้มีแค่ซ่อนปุ่ม แต่กระทบข้อมูลจริง workflow จริง และความรับผิดชอบของคนในองค์กร
+
+ระบบแบบ approval, dashboard, KPI report, admin console และ audit review ต้องตอบให้ได้ว่าใครดูข้อมูลได้ ใครอนุมัติได้ และใครแก้ configuration ได้
+
+ถ้าไม่มี RBAC ที่ชัด ระบบมักจบด้วยการ hard-code เงื่อนไขไว้หลายจุด พอ role เปลี่ยนหรือ business rule เปลี่ยนก็แก้ยากและ test ยาก
+
+<Callout type="enterprise" title="บริบท enterprise">
+  RBAC มักต้องออกแบบพร้อม approval workflow, permission matrix และ audit log
+  เพราะสิทธิ์ของ action หนึ่งมักขึ้นกับทั้ง role, state และ scope ของข้อมูล
+</Callout>
+
+## องค์ประกอบหลักของ RBAC
+
+ก่อนออกแบบ RBAC ควรแยกคำเหล่านี้ให้ชัด เพราะแต่ละคำตอบคำถามคนละแบบ
+
+<table>
+  <thead>
+    <tr>
+      <th>ส่วนประกอบ</th>
+      <th>หมายถึงอะไร</th>
+      <th>คำถามที่ช่วยออกแบบ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>User</strong></td>
+      <td>คนหรือบัญชีที่เข้าใช้ระบบ</td>
+      <td>คนนี้เป็นใคร และอยู่ในองค์กรส่วนไหน</td>
+    </tr>
+    <tr>
+      <td><strong>Role</strong></td>
+      <td>บทบาทที่ user ได้รับในระบบ เช่น Requester, Approver, Admin</td>
+      <td>บทบาทนี้รับผิดชอบงานอะไร</td>
+    </tr>
+    <tr>
+      <td><strong>Permission</strong></td>
+      <td>action ที่ระบบอนุญาต เช่น create, approve, reject, view log</td>
+      <td>action นี้ควรให้ role ไหนทำได้</td>
+    </tr>
+    <tr>
+      <td><strong>Scope</strong></td>
+      <td>ขอบเขตของข้อมูล เช่น department, branch, owner, amount limit</td>
+      <td>role นี้ทำได้กับข้อมูลชุดไหนเท่านั้น</td>
+    </tr>
+    <tr>
+      <td><strong>Policy / Rule</strong></td>
+      <td>เงื่อนไขเพิ่มจาก role เช่น ห้ามอนุมัติ request ของตัวเอง</td>
+      <td>มี business rule อะไรที่ role อย่างเดียวตอบไม่ได้</td>
+    </tr>
+  </tbody>
+</table>
+
+## Case ตัวอย่าง: ระบบขอเปลี่ยน credit limit
+
+สมมติองค์กรมีระบบให้พนักงานส่งคำขอเปลี่ยน credit limit ของลูกค้า คำขอหนึ่งรายการมี status เช่น draft, submitted, approved, rejected และ returned
+
+Requester สร้างคำขอ แก้ draft และ submit ได้ แต่หลัง submit แล้วไม่ควรแก้เองได้ เว้นแต่ Approver ส่งกลับมาให้แก้
+
+Approver อนุมัติหรือ reject ได้เฉพาะ request ที่อยู่ใน scope ของตัวเอง เช่น แผนกเดียวกัน วงเงินไม่เกิน limit และไม่ใช่ request ที่ตัวเองสร้าง
+
+Admin ดูแล role และ configuration ได้ แต่ไม่ควรถูกใช้เป็น role สำหรับข้ามทุก business rule เพราะจะทำให้ audit และ security review อธิบายยาก
+
+Auditor อ่าน request และ audit log ได้เพื่อสอบกลับ แต่ไม่ควรเปลี่ยนข้อมูลธุรกิจหรืออนุมัติแทนคนใน workflow
+
+### สิ่งที่ case นี้สอน
+
+- Role บอกว่าใครควรทำ action ได้
+- Status บอกว่า action นั้นทำได้ในช่วงไหนของ workflow
+- Scope บอกว่า role นี้ทำได้กับข้อมูลชุดไหน
+- Policy บอกข้อห้ามที่ role อย่างเดียวตอบไม่ได้
+- Audit log บอกว่า action สำคัญเกิดขึ้นจริงโดยใครและเมื่อไร
+
+## จาก case สู่ Permission Matrix
+
+เมื่อแปลง case นี้เป็น permission matrix เราจะได้ตารางที่มี role เป็นแถว action เป็นคอลัมน์ และ cell เป็นผลลัพธ์เช่น Allow, Limited หรือ Deny
+
+ตัวอย่างเช่น Approver อาจได้ Allow สำหรับ Approve within scope แต่ Requester ต้องเป็น Deny สำหรับ action เดียวกัน
+
+ส่วน Admin อาจได้ Allow สำหรับ Manage role config แต่ไม่ได้แปลว่าควร Allow สำหรับ Approve within scope เพราะ admin permission กับ business approval เป็นคนละเรื่อง
+
+Permission matrix ด้านล่างจึงไม่ใช่แค่ตารางสิทธิ์ แต่เป็นเครื่องมือคุยร่วมกันระหว่าง business, developer, QA และ security review
+
+## RBAC เชื่อมกับหัวข้ออื่นยังไง
+
+หัวข้อใกล้เคียงหลายคำฟังดูเหมือนกัน แต่ทำหน้าที่ต่างกันในระบบจริง
+
+<table>
+  <thead>
+    <tr>
+      <th>หัวข้อ</th>
+      <th>ความสัมพันธ์กับ RBAC</th>
+      <th>ต่างกันตรงไหน</th>
+      <th>ใช้คู่กันเมื่อไร</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Authentication</strong></td>
+      <td>เป็นขั้นก่อน RBAC</td>
+      <td>Authentication พิสูจน์ว่า user เป็นใคร ส่วน RBAC ตัดสินว่า user ทำอะไรได้</td>
+      <td>ทุกระบบที่ต้อง login ก่อนเข้าใช้</td>
+    </tr>
+    <tr>
+      <td><strong>Authorization</strong></td>
+      <td>RBAC เป็น model หนึ่งของ authorization</td>
+      <td>Authorization คือแนวคิดกว้าง ส่วน RBAC คือวิธีออกแบบผ่าน role</td>
+      <td>ทุกจุดที่ API หรือ UI ต้องตัดสินสิทธิ์</td>
+    </tr>
+    <tr>
+      <td><strong>Permission Matrix</strong></td>
+      <td>ทำให้ RBAC มองเห็นและ review ได้</td>
+      <td>RBAC คือ model ส่วน matrix คือรูปแบบสื่อสารและตรวจสอบ</td>
+      <td>ตอนคุย requirement, test case และ release review</td>
+    </tr>
+    <tr>
+      <td><strong>Approval Workflow</strong></td>
+      <td>กำหนด state ที่ action จะเกิดขึ้น</td>
+      <td>Workflow บอกว่างานเดินไปไหน RBAC บอกว่าใครทำ action ได้</td>
+      <td>ระบบคำขอ อนุมัติ เอกสาร หรือเปลี่ยน configuration</td>
+    </tr>
+    <tr>
+      <td><strong>Audit Log</strong></td>
+      <td>บันทึกผลของ action สำคัญ</td>
+      <td>RBAC ป้องกัน action ที่ไม่ควรทำ Audit log ใช้สอบกลับเมื่อ action เกิดแล้ว</td>
+      <td>security review, compliance, support และ incident review</td>
+    </tr>
+    <tr>
+      <td><strong>ABAC</strong></td>
+      <td>ช่วยเสริม RBAC เมื่อ role อย่างเดียวไม่พอ</td>
+      <td>ABAC ใช้ attribute เช่น department, owner, amount หรือ risk level</td>
+      <td>ระบบที่มี scope ซับซ้อนหรือ rule เปลี่ยนตามข้อมูล</td>
+    </tr>
+    <tr>
+      <td><strong>Testing</strong></td>
+      <td>ใช้ RBAC เป็น input ของ test case</td>
+      <td>Testing ไม่ได้กำหนดสิทธิ์ แต่ยืนยันว่าระบบทำตามสิทธิ์จริง</td>
+      <td>ก่อน release workflow หรือ permission change</td>
+    </tr>
+  </tbody>
+</table>
+
+## Common Mistakes
+
+- เริ่มจาก job title ในองค์กรโดยตรง ทำให้ role เยอะและซ้ำกันเกินไป
+- เช็ก permission เฉพาะใน UI แต่ backend หรือ API ยังเรียกได้อยู่
+- ให้ Admin ทำได้ทุกอย่างจนแยก business action กับ system configuration ไม่ออก
+- ลืม scope เช่น branch, department, owner หรือ amount limit
+- ไม่เก็บ denied action สำคัญ ทำให้สอบกลับไม่ได้ว่ามีคนพยายามทำอะไรแต่ถูกปฏิเสธ
+- ไม่ผูก RBAC กับ test case ทำให้ permission regression หลุดง่ายตอนแก้ระบบ
+
+## Checklist ตอนออกแบบ RBAC
+
+ใช้ checklist นี้ตอนเริ่มออกแบบหรือ review ระบบสิทธิ์
+
+- ระบุ action สำคัญเป็นคำกริยา เช่น create, submit, approve, reject, configure, view log
+- แยก role จาก job title ให้เหลือ role ที่มีความหมายในระบบจริง
+- ระบุ scope ของแต่ละ role เช่น own record, department, branch, amount limit
+- แยก system admin ออกจาก business approver
+- นิยาม Allow, Limited และ Deny ให้ทีมเข้าใจตรงกัน
+- เขียน permission matrix ก่อนลง code สำหรับ workflow สำคัญ
+- สร้าง test case จาก matrix ทั้งกรณี allow, deny และ limited
+- ระบุ action ที่ต้องเข้า audit log ตั้งแต่ช่วง design
+
+<Callout type="tip" title="วิธีคิดที่ใช้ได้จริง">
+  เริ่มจาก action สำคัญใน workflow ก่อน แล้วค่อยถามว่า role ไหนควรทำได้
+  อย่าเริ่มจากการสร้าง role จำนวนมากตั้งแต่แรก
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+ถ้าต้องการต่อยอดจาก RBAC ให้อ่านตามลำดับนี้
+
+- Permission Matrix: แปลง role และ action ให้เป็นตารางที่ review และ test ได้
+- Approval Workflow: ดูว่า action แต่ละตัวเกิดใน state ไหนของคำขอ
+- Audit Log: ออกแบบหลักฐานย้อนหลังว่าใครทำอะไร เมื่อไร และในบริบทไหน
 
 ## Viewer ที่เกี่ยวข้อง
 
-Permission matrix ด้านล่างช่วยให้เห็นว่า role แต่ละตัวทำ action ไหนได้บ้าง โดยข้อมูลมาจาก typed data ที่ validate ผ่าน Zod ก่อน render
+Permission matrix ด้านล่างใช้ case credit limit request เพื่อให้เห็นว่า role แต่ละตัวทำ action ไหนได้ และบาง action ต้องเป็น Limited เพราะขึ้นกับ scope หรือ policy เพิ่มเติม

@@ -8,21 +8,20 @@ interface PermissionMatrixProps {
   readonly caption?: string;
 }
 
+type PermissionMatrixCell = PermissionMatrixData["cells"][number];
+
 const accessLabels: Record<PermissionAccess, string> = {
   allow: "Allow",
   deny: "Deny",
   limited: "Limited",
 };
 
-function getAccess(
+function getCell(
   data: PermissionMatrixData,
   role: string,
   action: string,
-): PermissionAccess {
-  return (
-    data.cells.find((cell) => cell.role === role && cell.action === action)
-      ?.access ?? "deny"
-  );
+): PermissionMatrixCell | undefined {
+  return data.cells.find((cell) => cell.role === role && cell.action === action);
 }
 
 export function PermissionMatrix({ data, caption }: PermissionMatrixProps) {
@@ -49,13 +48,17 @@ export function PermissionMatrix({ data, caption }: PermissionMatrixProps) {
               <tr key={role}>
                 <th scope="row">{role}</th>
                 {data.actions.map((action) => {
-                  const access = getAccess(data, role, action);
+                  const cell = getCell(data, role, action);
+                  const access = cell?.access ?? "deny";
 
                   return (
                     <td key={action}>
                       <span className={`access-pill access-pill--${access}`}>
                         {accessLabels[access]}
                       </span>
+                      {cell?.note !== undefined ? (
+                        <p className="permission-matrix__note">{cell.note}</p>
+                      ) : null}
                     </td>
                   );
                 })}

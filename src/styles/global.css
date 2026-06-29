@@ -735,6 +735,42 @@ samp {
   padding-left: 1.25rem;
 }
 
+.prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin: 1.25rem 0;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface-raised);
+  font-size: 0.95rem;
+}
+
+.prose th,
+.prose td {
+  min-width: 10rem;
+  border-top: 1px solid var(--border);
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose thead th {
+  border-top: 0;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.prose td {
+  color: var(--text-muted);
+}
+
+.prose td strong {
+  color: var(--text);
+}
+
 .prose code {
   border-radius: 0.3rem;
   background: var(--code-surface);
@@ -818,6 +854,13 @@ samp {
 .access-pill--deny {
   background: var(--danger-bg);
   color: var(--danger-text);
+}
+
+.permission-matrix__note {
+  margin: 0.5rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
 }
 
 .viewer-skeleton {
@@ -1398,3 +1441,4 @@ html {
     transition-duration: 0.01ms !important;
   }
 }
+
