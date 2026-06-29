@@ -1,0 +1,18 @@
+## How it appears in enterprise systems
+
+An approval workflow moves a request through review, approval, rejection, or revision states.
+
+Common examples include purchase requests, access requests, document approvals, and changes to important configuration.
+
+## How it connects to RBAC
+
+Workflow defines the states a request can move through. RBAC defines which roles can perform actions in each state.
+
+Without RBAC, the wrong group may approve a request. Without workflow, RBAC becomes a flat permission list without process context.
+
+## Things to watch
+
+- Keep request status separate from user permissions.
+- Do not hard-code approvers only in the UI.
+- Design delegation, escalation, and audit logs early.
+- Acceptance criteria should name which roles can perform which actions in each status.

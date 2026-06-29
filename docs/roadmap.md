@@ -4,6 +4,8 @@
 
 Goal: ทำให้ repository มี source of truth สำหรับ vision, agent instructions, content model, และ delivery direction
 
+Status: implemented.
+
 Deliverables:
 
 - Populate `README.md`
@@ -25,7 +27,7 @@ Acceptance:
 
 Goal: สร้าง web app foundation สำหรับ SEA
 
-Status: initial scaffold implemented.
+Status: implemented as an initial atlas app foundation.
 
 Planned stack:
 
@@ -55,10 +57,15 @@ Deliverables:
 - Phase 1 local metadata search index
 - Initial layout that feels like an atlas, not a generic blog
 - Basic navigation for Thai default locale and English alternate locale
+- Area index route `/{locale}/{area}`
+- Typed area metadata for 9 Atlas Areas
+- Homepage area grid and static lifecycle map
 
 ## Phase 3: Bilingual Content Structure
 
 Goal: ทำให้ SEA รองรับภาษาไทยและอังกฤษเป็น first-class content model
+
+Status: initial implementation complete.
 
 Deliverables:
 
@@ -68,9 +75,18 @@ Deliverables:
 - Shared topic identity between Thai and English entries
 - Initial content authoring rules for localized pages
 
+Current coverage:
+
+- Thai and English MDX content paths exist
+- Topic metadata shares ids across locales
+- Locale switch exists for topic routes
+- Content is localized per page instead of mixing full Thai and English copies
+
 ## Phase 4: First SEA Topic
 
 Goal: สร้าง topic แรกที่พิสูจน์ content model ได้จริง
+
+Status: initial implementation complete.
 
 Recommended first topic:
 
@@ -87,13 +103,16 @@ Why RBAC:
 Deliverables:
 
 - Thai article
-- English article or summary page
-- Structured reference
+- English article
+- Structured topic metadata
 - Related topic links
+- Seed related topics: `approval-workflow`, `audit-log`, `permission-matrix`
 
 ## Phase 5: First Interactive Viewer
 
 Goal: ทำให้ SEA แตกต่างจาก Markdown docs ด้วย viewer แรก
+
+Status: initial implementation complete.
 
 Recommended viewer:
 
@@ -109,9 +128,17 @@ Deliverables:
 - Example RBAC matrix
 - Documentation explaining how content, data, viewer, and schema connect
 
+Current coverage:
+
+- `PermissionMatrix` viewer renders on the RBAC topic
+- Permission matrix data is typed and validated with Zod
+- Unit/component tests cover schema and viewer behavior
+
 ## Phase 6: Search Upgrade
 
 Goal: ทำให้ SEA ค้นหาเนื้อหาได้ดีขึ้นเมื่อ content เริ่มเยอะ
+
+Status: next major product capability.
 
 Deliverables:
 
@@ -123,6 +150,8 @@ Deliverables:
 ## Phase 7: Deployment
 
 Goal: ทำให้ SEA เปิดดูได้บนเว็บจริง
+
+Status: future.
 
 Deliverables:
 

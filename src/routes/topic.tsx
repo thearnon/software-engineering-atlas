@@ -49,7 +49,7 @@ export function TopicRoute() {
       <div className="prose">
         <Content />
       </div>
-      <PermissionMatrix data={rbacPermissions} />
+      {topic.id === "rbac" ? <PermissionMatrix data={rbacPermissions} /> : null}
     </article>
   );
 }

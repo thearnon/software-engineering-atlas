@@ -50,3 +50,16 @@ test("sidebar exposes locale-aware area groups", async ({ page }) => {
     sidebar.getByRole("link", { name: "Role-Based Access Control" }),
   ).toBeVisible();
 });
+
+test("seeded related topics render without the RBAC-only viewer", async ({
+  page,
+}) => {
+  await page.goto("/th/security/audit-log");
+
+  await expect(
+    page.getByRole("heading", { name: "Audit Log คืออะไร" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("table", { name: "RBAC permission matrix" }),
+  ).toHaveCount(0);
+});

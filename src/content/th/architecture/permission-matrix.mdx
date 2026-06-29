@@ -1,0 +1,18 @@
+## ใช้จริงในระบบองค์กรยังไง
+
+Permission Matrix คือตารางที่ทำให้เห็นว่า role แต่ละตัวทำ action ไหนได้บ้างในระบบ
+
+ในระบบองค์กร matrix ช่วยให้ product, business, developer, QA และ security review คุยเรื่องสิทธิ์ด้วยภาพเดียวกัน
+
+## เชื่อมกับ RBAC ยังไง
+
+RBAC คือแนวคิด ส่วน permission matrix คือรูปแบบที่ทำให้แนวคิดนั้นตรวจสอบและทดสอบได้
+
+Matrix ที่ดีควรเชื่อมกับ workflow state, audit log และ test case ไม่ใช่เป็นเอกสารแยกที่ไม่มีใครดูแล
+
+## สิ่งที่ควรระวัง
+
+- อย่าใช้ matrix แทน domain rule ทั้งหมด
+- ระบุ action ให้ชัด เช่น view, create, approve, reject, configure
+- แยก allow, limited และ deny ให้เข้าใจง่าย
+- ใช้ matrix เป็น input ให้ test และ review ก่อน release

@@ -83,7 +83,7 @@ Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffol
 - Fumadocs MDX/Core content pipeline
 - Tailwind CSS styling
 - Zod-validated typed data
-- Initial bilingual RBAC topic
+- Initial bilingual RBAC topic with related seed topics
 - Permission Matrix viewer
 - Local metadata search index
 - Vitest unit tests and Playwright e2e smoke test

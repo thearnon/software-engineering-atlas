@@ -1,0 +1,18 @@
+## How it appears in enterprise systems
+
+An audit log records important system events: who created a request, who approved it, who changed access, and when it happened.
+
+In enterprise internal tools, audit logs support traceability when teams investigate mistakes, disputes, or security reviews.
+
+## How it connects to RBAC
+
+RBAC says who is allowed to perform an action. An audit log records who actually performed that action and in what context.
+
+Without audit logs, a system may know who should have access but not what happened after access was granted.
+
+## Things to watch
+
+- Do not log only successful actions; important denied actions can matter too.
+- Do not store more sensitive data than the review process needs.
+- Keep timestamp, actor, action, target, and enough context to investigate later.
+- Make logs searchable for support, compliance, and incident review workflows.

@@ -1,0 +1,18 @@
+## ใช้จริงในระบบองค์กรยังไง
+
+Approval Workflow คือขั้นตอนที่ทำให้คำขอหนึ่งรายการผ่านการตรวจสอบ อนุมัติ ปฏิเสธ หรือส่งกลับไปแก้ไข
+
+ตัวอย่างใน enterprise web application คือคำขอซื้อของ การขอสิทธิ์ การอนุมัติเอกสาร และการเปลี่ยน configuration สำคัญ
+
+## เชื่อมกับ RBAC ยังไง
+
+Workflow บอกว่าคำขอเดินทางผ่านสถานะไหน ส่วน RBAC บอกว่า role ไหนทำ action ในแต่ละสถานะได้
+
+ถ้าไม่มี RBAC workflow อาจเปิดให้คนผิดกลุ่มอนุมัติได้ ถ้าไม่มี workflow RBAC ก็เหลือแค่ permission list ที่ไม่เห็น process จริง
+
+## สิ่งที่ควรระวัง
+
+- แยก status ของคำขอออกจาก permission ของผู้ใช้
+- อย่า hard-code approver ไว้ใน UI อย่างเดียว
+- ต้องคิดเรื่อง delegation, escalation และ audit log ตั้งแต่ต้น
+- Acceptance criteria ควรระบุว่า role ไหนทำ action ไหนได้ในแต่ละ status
