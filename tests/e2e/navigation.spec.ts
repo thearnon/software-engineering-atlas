@@ -27,6 +27,16 @@ test("navigates Thai and English SEA routes", async ({ page }) => {
     page.getByRole("table", { name: "RBAC permission matrix" }),
   ).toBeVisible();
 
+  await expect(
+    page.getByRole("complementary", { name: "ในหน้านี้" }),
+  ).toBeVisible();
+
+  await expect(
+    page
+      .getByRole("navigation", { name: "หัวข้อก่อนหน้าและถัดไป" })
+      .getByRole("link", { name: /Permission Matrix คืออะไร/ }),
+  ).toBeVisible();
+
   await page
     .getByLabel("Primary navigation")
     .getByRole("link", { name: "EN" })

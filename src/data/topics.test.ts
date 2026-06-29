@@ -1,5 +1,6 @@
 import {
   getTopicByRoute,
+  getTopicNeighbors,
   getTopicsByLocale,
   getTopicsByLocaleAndArea,
 } from "./topics";
@@ -69,5 +70,20 @@ describe("topic catalog", () => {
     const englishIds = getTopicsByLocale("en").map((topic) => topic.id);
 
     expect(englishIds).toEqual(thaiIds);
+  });
+
+  it("derives prev/next neighbors from area order", () => {
+    const first = getTopicNeighbors("th", "architecture", "rbac");
+    const second = getTopicNeighbors("th", "architecture", "permission-matrix");
+
+    expect(first.prev).toBeUndefined();
+    expect(first.next?.slug).toBe("permission-matrix");
+    expect(second.prev?.slug).toBe("rbac");
+    expect(second.next).toBeUndefined();
+  });
+
+  it("returns no neighbors for unknown or partial routes", () => {
+    expect(getTopicNeighbors("th", "architecture", "nope")).toEqual({});
+    expect(getTopicNeighbors("th", undefined, undefined)).toEqual({});
   });
 });

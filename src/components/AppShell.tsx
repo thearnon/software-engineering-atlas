@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useLocation, useParams } from "react-router";
 
+import { AreaIcon } from "@/components/AreaIcon";
 import { CommandSearch } from "@/components/CommandSearch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { getAreasByLocale } from "@/data/areas";
@@ -135,7 +136,10 @@ function AtlasLayout({ locale }: { readonly locale: Locale }) {
                       className="sidebar-area__label"
                       to={`/${locale}/${area.id}`}
                     >
-                      <span>{area.label}</span>
+                      <span className="sidebar-area__name">
+                        <AreaIcon area={area.id} size={16} />
+                        {area.label}
+                      </span>
                       {canExpand ? <small>{areaTopics.length}</small> : null}
                     </Link>
                     {canExpand ? (

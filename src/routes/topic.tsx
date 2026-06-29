@@ -1,16 +1,20 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { Link, Navigate, useParams } from "react-router";
 
 import { mdxComponents } from "@/components/mdx-components";
+import { TableOfContents } from "@/components/TableOfContents";
+import { TopicPager } from "@/components/TopicPager";
 import { getAreaById } from "@/data/areas";
 import { rbacPermissions } from "@/data/rbac-permissions";
 import {
   getRelatedTopics,
   getTopicByRoute,
+  getTopicNeighbors,
   hasTranslation,
 } from "@/data/topics";
 import { defaultLocale, isLocale, otherLocale } from "@/lib/locales";
 import { usePageMeta } from "@/lib/use-document-title";
+import { useHeadings } from "@/lib/use-headings";
 import { NotFound } from "@/routes/not-found";
 import { ViewerSkeleton } from "@/viewer/ViewerSkeleton";
 
@@ -45,12 +49,16 @@ function TopicView({
 }) {
   usePageMeta({ title: topic.title, description: topic.summary, locale });
 
+  const proseRef = useRef<HTMLDivElement>(null);
+  const { headings, activeId } = useHeadings(proseRef, [locale, topic.slug]);
+
   const Content = topic.Content;
   const alternateLocale = otherLocale(locale);
   const areaMeta = getAreaById(topic.area, locale);
   const areaLabel = areaMeta?.label ?? topic.area;
   const relatedTopics = getRelatedTopics(locale, topic.relatedTopicIds);
   const translationExists = hasTranslation(topic.id, locale);
+  const { prev, next } = getTopicNeighbors(locale, topic.area, topic.slug);
 
   const matrixCaption =
     locale === "th"
@@ -83,8 +91,15 @@ function TopicView({
           </span>
         )}
       </header>
-      <div className="prose">
-        <Content components={mdxComponents} />
+      <div className={`topic-body${headings.length > 0 ? " has-toc" : ""}`}>
+        <div className="prose" ref={proseRef}>
+          <Content components={mdxComponents} />
+        </div>
+        <TableOfContents
+          activeId={activeId}
+          headings={headings}
+          locale={locale}
+        />
       </div>
       {topic.viewer === "permission-matrix" ? (
         <Suspense fallback={<ViewerSkeleton />}>
@@ -113,6 +128,7 @@ function TopicView({
           </div>
         </section>
       ) : null}
+      <TopicPager locale={locale} next={next} prev={prev} />
     </article>
   );
 }

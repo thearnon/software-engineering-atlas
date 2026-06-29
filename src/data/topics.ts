@@ -214,3 +214,24 @@ export function hasTranslation(id: string, locale: Locale): boolean {
   const target: Locale = locale === "th" ? "en" : "th";
   return topics.some((topic) => topic.id === id && topic.locale === target);
 }
+
+export function getTopicNeighbors(
+  locale: Locale,
+  area: string | undefined,
+  slug: string | undefined,
+): { prev?: TopicEntry; next?: TopicEntry } {
+  if (area === undefined || slug === undefined) {
+    return {};
+  }
+
+  const areaTopics = topics.filter(
+    (topic) => topic.locale === locale && topic.area === area,
+  );
+  const index = areaTopics.findIndex((topic) => topic.slug === slug);
+
+  if (index === -1) {
+    return {};
+  }
+
+  return { prev: areaTopics[index - 1], next: areaTopics[index + 1] };
+}

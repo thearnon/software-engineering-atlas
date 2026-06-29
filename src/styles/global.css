@@ -368,10 +368,8 @@ samp {
 
 .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-  gap: 2rem;
-  align-items: center;
-  min-height: 22rem;
+  gap: 0.75rem;
+  padding: 1.5rem 0 0.5rem;
 }
 
 .hero-section h1,
@@ -475,28 +473,63 @@ samp {
   color: var(--text-muted);
 }
 
-.hero-map {
-  display: grid;
-  gap: 0.75rem;
+/* ----------------------------------------------------------------------------
+   Lifecycle map (homepage atlas identity) — DESIGN §11
+---------------------------------------------------------------------------- */
+.lifecycle-map {
+  margin-top: 2rem;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--surface-raised) 72%, transparent);
-  padding: 1rem;
+  background: color-mix(in srgb, var(--surface-raised) 60%, transparent);
+  padding: 1.25rem;
 }
 
-.hero-map span {
-  position: relative;
-  border: 1px solid var(--border-strong);
-  border-radius: 0.5rem;
-  background: var(--surface-raised);
-  padding: 0.875rem 0.875rem 0.875rem 1.75rem;
+.lifecycle-map h2 {
+  margin: 0 0 1rem;
+  color: var(--text-strong);
+  font-size: 1.25rem;
 }
 
-.hero-map span::before {
-  position: absolute;
-  left: 0.875rem;
-  color: var(--accent-mark);
-  content: ">";
+.lifecycle-map__canvas {
+  width: 100%;
+  height: auto;
+}
+
+.lifecycle-map__edges line {
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.lifecycle-map__node {
+  cursor: pointer;
+}
+
+.lifecycle-map__node rect {
+  fill: var(--surface-raised);
+  stroke: var(--border-strong);
+  transition:
+    stroke 120ms ease-out,
+    fill 120ms ease-out;
+}
+
+.lifecycle-map__node text {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.lifecycle-map__node:hover rect {
+  fill: color-mix(in srgb, var(--accent) 12%, var(--surface-raised));
+  stroke: var(--accent);
+}
+
+.lifecycle-map__node:focus-visible rect {
+  stroke: var(--focus-ring);
+}
+
+.lifecycle-map__fallback {
+  display: none;
 }
 
 /* ----------------------------------------------------------------------------
@@ -837,6 +870,217 @@ samp {
 }
 
 /* ----------------------------------------------------------------------------
+   Area icons
+---------------------------------------------------------------------------- */
+.area-card__head {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.area-card__head svg {
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+
+.sidebar-area__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-area__name svg {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.sidebar-area.is-active .sidebar-area__name svg {
+  color: var(--accent-text);
+}
+
+.area-header h1 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.area-header__icon {
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+
+/* ----------------------------------------------------------------------------
+   Topic body + on-this-page TOC
+---------------------------------------------------------------------------- */
+.topic-body {
+  min-width: 0;
+}
+
+.topic-body.has-toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+@media (min-width: 1025px) {
+  .topic-body.has-toc {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+  }
+}
+
+.toc {
+  position: sticky;
+  top: calc(var(--nav-height) + 1rem);
+  align-self: start;
+  max-height: calc(100vh - var(--nav-height) - 2rem);
+  overflow-y: auto;
+}
+
+.toc__title {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.toc nav ul {
+  display: grid;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border);
+  list-style: none;
+}
+
+.toc__item a {
+  display: block;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  padding: 0.25rem 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.toc__item--h3 a {
+  padding-left: 1.5rem;
+}
+
+.toc__item a:hover {
+  color: var(--text);
+}
+
+.toc__item a.is-active {
+  border-left-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .toc {
+    display: none;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Prev / next pager
+---------------------------------------------------------------------------- */
+.topic-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.topic-pager__link {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.topic-pager__link:hover {
+  border-color: var(--accent);
+}
+
+.topic-pager__link small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.topic-pager__link span {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.topic-pager__link--next {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .topic-pager {
+    grid-template-columns: 1fr;
+  }
+
+  .topic-pager__link--next {
+    text-align: left;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Lifecycle map — small-screen fallback
+---------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .lifecycle-map__canvas {
+    display: none;
+  }
+
+  .lifecycle-map__fallback {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lifecycle-map__fallback a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    color: var(--text);
+  }
+
+  .lifecycle-map__fallback svg {
+    flex-shrink: 0;
+    color: var(--accent-text);
+  }
+}
+
+@media (max-width: 420px) {
+  .lifecycle-map__fallback {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   In-page anchor scrolling
+---------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+.prose :is(h2, h3) {
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
+}
+
+/* ----------------------------------------------------------------------------
    Callouts (MDX) — DESIGN §13
 ---------------------------------------------------------------------------- */
 .callout {
@@ -1142,6 +1386,10 @@ samp {
    Motion preferences (DESIGN §14)
 ---------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

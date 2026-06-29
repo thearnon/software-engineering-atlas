@@ -1,5 +1,6 @@
 import { Link, Navigate, useParams } from "react-router";
 
+import { AreaIcon } from "@/components/AreaIcon";
 import { getAreaById, getAreasByLocale } from "@/data/areas";
 import type { AreaEntry } from "@/data/areas";
 import { getTopicsByLocaleAndArea } from "@/data/topics";
@@ -49,7 +50,10 @@ function AreaView({
       </nav>
       <header className="area-header">
         <p>Atlas Area</p>
-        <h1>{area.label}</h1>
+        <h1>
+          <AreaIcon area={area.id} className="area-header__icon" size={26} />
+          {area.label}
+        </h1>
         <span>{area.description}</span>
         <small>{area.lifecyclePosition}</small>
       </header>

@@ -1,10 +1,12 @@
 import { Link, Navigate, useParams } from "react-router";
 
+import { AreaIcon } from "@/components/AreaIcon";
 import { HeroSearch } from "@/components/HeroSearch";
 import { getAreasByLocale } from "@/data/areas";
 import { getTopicsByLocale } from "@/data/topics";
 import { defaultLocale, isLocale } from "@/lib/locales";
 import { usePageMeta } from "@/lib/use-document-title";
+import { LifecycleMap } from "@/viewer/LifecycleMap";
 
 export function HomeRoute() {
   const { locale: localeParam } = useParams();
@@ -30,22 +32,11 @@ function HomeView({ locale }: { readonly locale: "th" | "en" }) {
   return (
     <article className="home-page">
       <section className="hero-section">
-        <div>
-          <h1>Software Engineering Atlas</h1>
-          <p>{tagline}</p>
-          <HeroSearch locale={locale} />
-        </div>
-        <section
-          className="hero-map"
-          aria-label="Software development lifecycle map"
-        >
-          <span>Requirement</span>
-          <span>Workflow</span>
-          <span>Architecture</span>
-          <span>Testing</span>
-          <span>Deployment</span>
-        </section>
+        <h1>Software Engineering Atlas</h1>
+        <p>{tagline}</p>
+        <HeroSearch locale={locale} />
       </section>
+      <LifecycleMap areas={areas} locale={locale} />
       <section className="area-section" aria-labelledby="areas-title">
         <h2 id="areas-title">
           {locale === "th" ? "สำรวจตามพื้นที่ความรู้" : "Explore by area"}
@@ -62,7 +53,10 @@ function HomeView({ locale }: { readonly locale: "th" | "en" }) {
                 key={area.id}
                 to={`/${locale}/${area.id}`}
               >
-                <span>{area.label}</span>
+                <span className="area-card__head">
+                  <AreaIcon area={area.id} />
+                  {area.label}
+                </span>
                 <small>{area.description}</small>
                 <em>
                   {topicCount} {topicCount === 1 ? "topic" : "topics"}
