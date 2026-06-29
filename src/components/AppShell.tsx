@@ -9,6 +9,11 @@ import { getTopicsByLocale } from "@/data/topics";
 import type { Locale } from "@/lib/locales";
 import { defaultLocale, isLocale, otherLocale } from "@/lib/locales";
 
+const seaTransparentIconUrl = new URL(
+  "../assets/images/sea-icon-transparent.png",
+  import.meta.url,
+).href;
+
 function switchLocalePath(pathname: string, targetLocale: string): string {
   const segments = pathname.split("/").filter(Boolean);
 
@@ -84,7 +89,14 @@ function AtlasLayout({ locale }: { readonly locale: Locale }) {
             </svg>
           </button>
           <Link className="brand" to={`/${locale}`} aria-label="SEA home">
-            <span className="brand-mark">SEA</span>
+            <span className="brand-mark">
+              <img
+                alt="Software Engineering Atlas icon"
+                height="40"
+                src={seaTransparentIconUrl}
+                width="40"
+              />
+            </span>
             <span>
               <strong>Software Engineering Atlas</strong>
               <small>by thearnon</small>
@@ -209,10 +221,6 @@ function AtlasLayout({ locale }: { readonly locale: Locale }) {
           <strong>Software Engineering Atlas</strong>
           <small>by thearnon</small>
         </div>
-        <nav aria-label={isThai ? "ภาษา" : "Language"}>
-          <Link to={switchLocalePath(location.pathname, "th")}>ไทย</Link>
-          <Link to={switchLocalePath(location.pathname, "en")}>EN</Link>
-        </nav>
       </footer>
     </div>
   );

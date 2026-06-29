@@ -10,9 +10,8 @@ import {
   getRelatedTopics,
   getTopicByRoute,
   getTopicNeighbors,
-  hasTranslation,
 } from "@/data/topics";
-import { defaultLocale, isLocale, otherLocale } from "@/lib/locales";
+import { defaultLocale, isLocale } from "@/lib/locales";
 import { usePageMeta } from "@/lib/use-document-title";
 import { useHeadings } from "@/lib/use-headings";
 import { NotFound } from "@/routes/not-found";
@@ -53,11 +52,9 @@ function TopicView({
   const { headings, activeId } = useHeadings(proseRef, [locale, topic.slug]);
 
   const Content = topic.Content;
-  const alternateLocale = otherLocale(locale);
   const areaMeta = getAreaById(topic.area, locale);
   const areaLabel = areaMeta?.label ?? topic.area;
   const relatedTopics = getRelatedTopics(locale, topic.relatedTopicIds);
-  const translationExists = hasTranslation(topic.id, locale);
   const { prev, next } = getTopicNeighbors(locale, topic.area, topic.slug);
 
   const matrixCaption =
@@ -78,18 +75,6 @@ function TopicView({
           <h1>{topic.title}</h1>
           <span>{topic.summary}</span>
         </div>
-        {translationExists ? (
-          <Link
-            className="locale-card"
-            to={`/${alternateLocale}/${topic.area}/${topic.slug}`}
-          >
-            {alternateLocale === "en" ? "EN" : "ไทย"}
-          </Link>
-        ) : (
-          <span className="fallback-badge">
-            {locale === "th" ? "ไม่มีเวอร์ชัน EN" : "ไม่มีเวอร์ชันภาษาไทย"}
-          </span>
-        )}
       </header>
       <div className={`topic-body${headings.length > 0 ? " has-toc" : ""}`}>
         <div className="prose" ref={proseRef}>
