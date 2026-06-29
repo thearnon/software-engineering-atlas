@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useLocation, useParams } from "react-router";
 
+import { CommandSearch } from "@/components/CommandSearch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { getAreasByLocale } from "@/data/areas";
 import { getTopicsByLocale } from "@/data/topics";
@@ -90,6 +91,7 @@ function AtlasLayout({ locale }: { readonly locale: Locale }) {
           </Link>
         </div>
         <nav className="top-nav__actions" aria-label="Primary navigation">
+          <CommandSearch locale={locale} />
           <Link
             className="nav-button"
             to={switchLocalePath(location.pathname, alternateLocale)}

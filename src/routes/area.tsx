@@ -4,7 +4,8 @@ import { getAreaById, getAreasByLocale } from "@/data/areas";
 import type { AreaEntry } from "@/data/areas";
 import { getTopicsByLocaleAndArea } from "@/data/topics";
 import { defaultLocale, isLocale } from "@/lib/locales";
-import { useDocumentTitle } from "@/lib/use-document-title";
+import { usePageMeta } from "@/lib/use-document-title";
+import { NotFound } from "@/routes/not-found";
 
 export function AreaRoute() {
   const { area: areaParam, locale: localeParam } = useParams();
@@ -16,7 +17,7 @@ export function AreaRoute() {
   const area = getAreaById(areaParam, localeParam);
 
   if (area === undefined) {
-    return <Navigate to={`/${localeParam}`} replace />;
+    return <NotFound locale={localeParam} />;
   }
 
   return <AreaView area={area} locale={localeParam} />;
@@ -29,7 +30,11 @@ function AreaView({
   readonly area: AreaEntry;
   readonly locale: "th" | "en";
 }) {
-  useDocumentTitle(area.label);
+  usePageMeta({
+    title: area.label,
+    description: area.description,
+    locale,
+  });
 
   const topics = getTopicsByLocaleAndArea(locale, area.id);
   const relatedAreas = getAreasByLocale(locale).filter((relatedArea) =>

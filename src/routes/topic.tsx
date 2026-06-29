@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Link, Navigate, useParams } from "react-router";
 
+import { mdxComponents } from "@/components/mdx-components";
 import { getAreaById } from "@/data/areas";
 import { rbacPermissions } from "@/data/rbac-permissions";
 import {
@@ -9,7 +10,8 @@ import {
   hasTranslation,
 } from "@/data/topics";
 import { defaultLocale, isLocale, otherLocale } from "@/lib/locales";
-import { useDocumentTitle } from "@/lib/use-document-title";
+import { usePageMeta } from "@/lib/use-document-title";
+import { NotFound } from "@/routes/not-found";
 import { ViewerSkeleton } from "@/viewer/ViewerSkeleton";
 
 const PermissionMatrix = lazy(() =>
@@ -28,7 +30,7 @@ export function TopicRoute() {
   const topic = getTopicByRoute(localeParam, area, slug);
 
   if (topic === undefined) {
-    return <Navigate to={`/${localeParam}`} replace />;
+    return <NotFound locale={localeParam} />;
   }
 
   return <TopicView locale={localeParam} topic={topic} />;
@@ -41,7 +43,7 @@ function TopicView({
   readonly locale: "th" | "en";
   readonly topic: NonNullable<ReturnType<typeof getTopicByRoute>>;
 }) {
-  useDocumentTitle(topic.title);
+  usePageMeta({ title: topic.title, description: topic.summary, locale });
 
   const Content = topic.Content;
   const alternateLocale = otherLocale(locale);
@@ -82,7 +84,7 @@ function TopicView({
         )}
       </header>
       <div className="prose">
-        <Content />
+        <Content components={mdxComponents} />
       </div>
       {topic.viewer === "permission-matrix" ? (
         <Suspense fallback={<ViewerSkeleton />}>

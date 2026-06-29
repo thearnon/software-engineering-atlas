@@ -4,7 +4,7 @@ import { HeroSearch } from "@/components/HeroSearch";
 import { getAreasByLocale } from "@/data/areas";
 import { getTopicsByLocale } from "@/data/topics";
 import { defaultLocale, isLocale } from "@/lib/locales";
-import { useDocumentTitle } from "@/lib/use-document-title";
+import { usePageMeta } from "@/lib/use-document-title";
 
 export function HomeRoute() {
   const { locale: localeParam } = useParams();
@@ -17,8 +17,6 @@ export function HomeRoute() {
 }
 
 function HomeView({ locale }: { readonly locale: "th" | "en" }) {
-  useDocumentTitle("", true);
-
   const topics = getTopicsByLocale(locale);
   const areas = getAreasByLocale(locale);
 
@@ -26,6 +24,8 @@ function HomeView({ locale }: { readonly locale: "th" | "en" }) {
     locale === "th"
       ? "แผนที่ความรู้แบบ interactive สำหรับ software engineering, architecture และ enterprise web applications"
       : "An interactive knowledge map for software engineering, architecture, and enterprise web applications.";
+
+  usePageMeta({ title: "", description: tagline, locale, isHome: true });
 
   return (
     <article className="home-page">

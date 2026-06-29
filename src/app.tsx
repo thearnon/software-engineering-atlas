@@ -4,6 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { defaultLocale } from "@/lib/locales";
 import { AreaRoute } from "@/routes/area";
 import { HomeRoute } from "@/routes/home";
+import { NotFoundRoute } from "@/routes/not-found";
 import { TopicRoute } from "@/routes/topic";
 
 const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: ":area/:topic",
         element: <TopicRoute />,
+      },
+      {
+        path: "*",
+        element: <NotFoundRoute />,
       },
     ],
   },

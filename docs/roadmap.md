@@ -142,12 +142,18 @@ Goal: ทำให้ SEA ค้นหาเนื้อหาได้ดีข
 
 Status: next major product capability.
 
+Prerequisite: static pre-rendering / SSG ของ topic pages — Pagefind index ต้องการ prerendered HTML (ดู Deferred / Backlog)
+
 Deliverables:
 
 - Pagefind full-text static search
 - Locale-aware search results
 - Metadata fallback for topics without indexed full text
 - Search UI that supports Thai and English content
+
+Current coverage:
+
+- Phase 1 metadata search wired into homepage hero และ global command palette (`Cmd/Ctrl+K`)
 
 ## Phase 7: Deployment
 
@@ -162,3 +168,15 @@ Deliverables:
 - Basic metadata and SEO
 - Public URL
 - Lightweight contribution or authoring notes for future agent-assisted content
+
+## Deferred / Backlog
+
+Goal: เก็บงานที่ตัดสินใจพักไว้จาก UX/UI review เพื่อไม่ให้หล่นหาย
+
+Status: deferred — ต้องเลือกทิศทางก่อนเริ่ม
+
+UX/UI review รอบล่าสุดทำส่วน quick-win เสร็จแล้ว (design tokens + light/dark theme, การโหลดฟอนต์ Sarabun/Inter/JetBrains Mono, search ใช้งานได้จริง, related topics, sidebar drawer + collapse, footer, focus/skip-link, 404 page, global `Cmd/Ctrl+K` search, Callout components, per-page SEO + hreflang) รายการที่ยังพักไว้:
+
+- **Static pre-rendering / SSG** — เป็น prerequisite ของ Phase 6 (Pagefind ต้องการ prerendered HTML) และ SEO เต็มรูปแบบใน Phase 7 ปัจจุบันแอปเป็น client-only SPA โดย meta/hreflang ตั้งผ่าน JS ใน `usePageMeta` ที่ `src/lib/use-document-title.ts`
+- **Multi-layer content model** — รวม layer ของ topic เดียวกันเข้าด้วยกัน เพื่อทำ TopicCard badges `Article / Reference / Viewer` ตาม DESIGN §13 (data model ปัจจุบันให้ 1 layer ต่อ entry ใน `src/data/topics.ts`)
+- **Polish** — test coverage ของ UI ใหม่ (`ThemeToggle`, `HeroSearch`, `CommandSearch`, drawer, related topics), focus-trap ใน mobile drawer และ `Cmd/Ctrl+K` dialog, และ print stylesheet สำหรับ reference layer
