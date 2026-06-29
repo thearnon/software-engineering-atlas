@@ -1,70 +1,75 @@
 # Software Engineering Atlas (SEA)
 
-**Software Engineering Atlas** หรือ **SEA** คือแผนที่ความรู้แบบ interactive สำหรับสำรวจ เรียนรู้ และเชื่อมโยงแนวคิดด้าน software engineering ตั้งแต่ requirement, process, architecture, code design, database, testing, deployment, security ไปจนถึง UX/UI โดยเน้นการอธิบายแบบ practical จากมุมมองการสร้างระบบเว็บองค์กรจริง
+[English](README.md) | [Thai](README.th.md)
+
+**Software Engineering Atlas** (SEA) is a bilingual interactive knowledge atlas for practical software engineering.
 
 > A visual knowledge base for software engineering, architecture, and enterprise web applications.
 >
 > by thearnon
 
-## SEA คืออะไร
+SEA connects concepts across the software development lifecycle: requirements, process, architecture, code design, databases, testing, deployment, security, and UX/UI.
 
-SEA ไม่ใช่แค่ blog และไม่ใช่แค่ note ส่วนตัว แต่เป็น:
+It is designed from the perspective of building real enterprise web applications, especially internal tools, approval systems, dashboards, KPI systems, workflow systems, and maintainable business software.
 
-- **Visual knowledge base** สำหรับเก็บและทบทวนความรู้
-- **Learning map** สำหรับเห็นความสัมพันธ์ของหัวข้อ software engineering
-- **Reference system** สำหรับกลับมาเปิดดู concept, pattern, trade-off, และ mistake ได้เร็ว
-- **Interactive documentation** สำหรับ viewer, matrix, decision tree, workflow, และ diagram ที่ช่วยให้เข้าใจมากกว่า Markdown ธรรมดา
+## What SEA Is
 
-แนวคิดหลักคือทำให้ความรู้ที่มักกระจัดกระจายใน chat, note, file, และ article กลายเป็นระบบเดียวที่อ่านง่าย เห็นภาพ และต่อยอดเป็นเว็บความรู้สาธารณะได้
+SEA is not a chronological blog or a loose note dump. It is a structured knowledge product:
 
-## English Summary
+- **Visual knowledge base** for storing and reviewing practical engineering knowledge
+- **Learning map** for understanding how software engineering topics connect
+- **Reference system** for revisiting concepts, patterns, trade-offs, and common mistakes
+- **Interactive documentation** for viewers, matrices, decision trees, workflows, and diagrams
 
-Software Engineering Atlas is an interactive bilingual knowledge atlas for practical software engineering. It connects concepts across the software development lifecycle, from business requirements and workflows to architecture, code design, databases, testing, deployment, security, and UX/UI.
+The goal is to turn scattered engineering knowledge into a system that is easy to read, navigate, extend, and eventually publish.
 
-SEA is designed as a knowledge product, not a chronological blog. Articles are entry points, references are structured knowledge, and interactive viewers make abstract concepts visible and usable.
+## Audience
 
-## กลุ่มเป้าหมาย
-
-- **Ken / thearnon** ใช้เป็นคลังความรู้ส่วนตัว พื้นที่ทบทวน และระบบจัดระเบียบความคิด
-- **Developer / software engineer ที่กำลังเรียนรู้ภาพรวม** โดยเฉพาะคนที่เริ่มเห็นว่า software ไม่ใช่แค่ code
-- **คนที่สนใจ enterprise web application** เช่น internal tools, approval systems, KPI systems, dashboards, และ workflow digitization
+- **Ken / thearnon** - personal knowledge base, review space, and thinking system
+- **Developers learning the bigger software picture** - especially people moving beyond code-only thinking
+- **People interested in enterprise web applications** - internal tools, approval systems, KPI systems, dashboards, and workflow digitization
 
 ## Content Layers
 
-SEA content แบ่งเป็น 3 ชั้นหลัก:
+SEA content has three layers:
 
-1. **Article** - บทความอ่านง่าย เช่น RBAC คืออะไร, Clean Architecture ใช้จริงยังไง, SDLC ต่างจาก Agile ยังไง
-2. **Knowledge Base / Reference** - เนื้อหา structured สำหรับทบทวน เช่น definition, why it matters, when to use, common mistakes, related topics
-3. **Interactive Viewer** - เครื่องมือเห็นภาพ เช่น knowledge map, comparison matrix, decision tree, workflow viewer, permission matrix, architecture layer viewer
+1. **Article** - approachable entry points for learning a topic
+2. **Knowledge Base / Reference** - structured material for review and lookup
+3. **Interactive Viewer** - visual or interactive tools that make abstract concepts visible
+
+Examples of viewer patterns include knowledge maps, comparison matrices, decision trees, workflow viewers, permission matrices, architecture layer viewers, and testing pyramid viewers.
 
 ## Language Model
 
-ภาษา default ของ SEA คือ `th` และมี `en` เป็น alternate language สำหรับ public/global reach
+SEA is bilingual by design:
 
-เป้าหมายของระบบภาษาในอนาคตคือมี language switch ระหว่างไทยกับอังกฤษจริง ไม่ใช่การผสมสองภาษาไว้ในหน้าเดียวเสมอไป คำ technical term ภาษาอังกฤษสามารถคงไว้ได้เมื่อช่วยให้เข้าใจตรงกับ industry vocabulary
+- Default locale: `th`
+- Alternate locale: `en`
+
+Thai and English should be real localized pages or content entries, not permanent full-copy language mixing on every page. Standard software terms such as `workflow`, `architecture`, `deployment`, `RBAC`, `schema`, and `viewer` can remain in English when that is clearer.
 
 ## Technical Direction
 
-Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffold app:
+The app foundation uses:
 
-- **React + Vite** เป็น core app foundation
-- **React Router** สำหรับ locale-aware routing และ topic routes
-- **TypeScript strict** สำหรับ application code ทั้งหมด
-- **Fumadocs Core + Fumadocs MDX** สำหรับ content source และ MDX pipeline
-- **MDX** สำหรับเขียนเนื้อหาและฝัง viewer components
-- **Tailwind CSS** สำหรับ styling/design system
-- **Zod + TS inferred types** สำหรับ data contract
-- **React viewer components** ที่รับ typed props และ validated data
-- **Vitest + Playwright + `tsc --noEmit`** สำหรับ quality gates
-- **Local metadata index** ก่อน แล้วค่อยเพิ่ม Pagefind full-text static search
+- **React + Vite** for the core app
+- **React Router** for locale-aware routes
+- **TypeScript strict** for application code
+- **Fumadocs Core + Fumadocs MDX** for the content source and MDX pipeline
+- **MDX** for content and embedded viewer components
+- **Tailwind CSS** for styling
+- **Zod + inferred TypeScript types** for data contracts
+- **Typed React viewer components** for interactive views
+- **Vitest + Playwright + `tsc --noEmit`** as quality gates
+- **Local metadata search index** first, with Pagefind planned later
 
-แนวคิดโครงสร้างในอนาคต:
+Key boundaries:
 
-- `content` - เนื้อหา MDX
-- `data` - ข้อมูล structured แบบ typed `.ts` เป็นหลัก
-- `viewer` - React components สำหรับแสดงผล
-- `schema` - Zod schemas และ inferred TypeScript types
-- `search` - metadata index และ future Pagefind integration
+- `content` - localized MDX pages and prose
+- `data` - typed structured knowledge data
+- `viewer` - React components for interactive views
+- `schema` - Zod schemas and inferred TypeScript types
+- `search` - local metadata index and future Pagefind integration
 
 ## Foundation Docs
 
@@ -76,22 +81,28 @@ Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffol
 
 ## Current Status
 
-ตอนนี้ repository นี้มี **Phase 2 app scaffold** แล้ว:
+The repository currently includes an initial SEA app foundation:
 
 - React + Vite + React Router app shell
+- Locale-aware homepage, area index pages, and topic pages
+- Typed metadata for the 9 Atlas Areas
 - Strict TypeScript setup
 - Fumadocs MDX/Core content pipeline
 - Tailwind CSS styling
-- Zod-validated typed data
+- Zod-validated typed viewer data
 - Initial bilingual RBAC topic with related seed topics
 - Permission Matrix viewer
 - Local metadata search index
-- Vitest unit tests and Playwright e2e smoke test
+- Vitest unit tests and Playwright e2e smoke tests
 
-Useful commands:
+## Useful Commands
 
-- `npm.cmd run dev`
-- `npm.cmd test`
-- `npm.cmd run typecheck`
-- `npm.cmd run build`
-- `npm.cmd run test:e2e`
+On Windows PowerShell, use `npm.cmd` if `npm.ps1` is blocked by execution policy.
+
+```powershell
+npm.cmd run dev
+npm.cmd test
+npm.cmd run typecheck
+npm.cmd run build
+npm.cmd run test:e2e
+```

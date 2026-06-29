@@ -77,7 +77,8 @@ Future implementation should keep these concerns distinct:
 
 ## Repository Instructions
 
-- `README.md` is the public project overview.
+- `README.md` is the English-primary public project overview.
+- `README.th.md` is the Thai public project overview.
 - `DESIGN.md` is the visual and technical design reference for the app.
 - `docs/sea-product-brief.md` is the durable concept brief.
 - `docs/content-model.md` is the content and localization model.

@@ -9,6 +9,7 @@ Status: implemented.
 Deliverables:
 
 - Populate `README.md`
+- Add `README.th.md`
 - Populate `AGENTS.md`
 - Add `DESIGN.md`
 - Add `docs/sea-product-brief.md`
@@ -19,6 +20,7 @@ Acceptance:
 
 - Thai text renders correctly as UTF-8
 - README links point to existing docs
+- English and Thai README files link to each other
 - Design reference is linked from README and recognized by `AGENTS.md`
 - `CLAUDE.md` still imports `AGENTS.md`
 - No app scaffold or package setup is introduced
