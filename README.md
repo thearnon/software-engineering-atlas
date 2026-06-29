@@ -47,23 +47,28 @@ SEA content แบ่งเป็น 3 ชั้นหลัก:
 
 Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffold app:
 
-- **Next.js** เป็น app framework
-- **Fumadocs** เป็น docs/content layer
-- **MDX** สำหรับเขียนเนื้อหาและฝัง component
+- **React + Vite** เป็น core app foundation
+- **React Router** สำหรับ locale-aware routing และ topic routes
+- **TypeScript strict** สำหรับ application code ทั้งหมด
+- **Fumadocs Core + Fumadocs MDX** สำหรับ content source และ MDX pipeline
+- **MDX** สำหรับเขียนเนื้อหาและฝัง viewer components
 - **Tailwind CSS** สำหรับ styling/design system
-- **React viewer components** สำหรับ interactive knowledge tools
-- **JSON/TypeScript schemas** สำหรับ structured data ที่ AI agent และ viewer ใช้ร่วมกันได้
+- **Zod + TS inferred types** สำหรับ data contract
+- **React viewer components** ที่รับ typed props และ validated data
+- **Vitest + Playwright + `tsc --noEmit`** สำหรับ quality gates
+- **Local metadata index** ก่อน แล้วค่อยเพิ่ม Pagefind full-text static search
 
 แนวคิดโครงสร้างในอนาคต:
 
 - `content` - เนื้อหา MDX
-- `data` - ข้อมูล structured
+- `data` - ข้อมูล structured แบบ typed `.ts` เป็นหลัก
 - `viewer` - React components สำหรับแสดงผล
-- `schema` - กติกาและ shape ของข้อมูล
+- `schema` - Zod schemas และ inferred TypeScript types
+- `search` - metadata index และ future Pagefind integration
 
 ## Foundation Docs
 
-- [Design Reference](design.md)
+- [Design Reference](DESIGN.md)
 - [SEA Product Brief](docs/sea-product-brief.md)
 - [Content Model](docs/content-model.md)
 - [Roadmap](docs/roadmap.md)
@@ -73,4 +78,4 @@ Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffol
 
 ตอนนี้ repository นี้อยู่ในช่วง **foundation docs** ยังไม่มี app scaffold, package setup, build system, หรือ automated tests
 
-ขั้นถัดไปหลังจาก foundation docs คือ scaffold `Next.js + Fumadocs + MDX + Tailwind` แล้ววาง bilingual content structure และสร้าง topic แรกพร้อม interactive viewer แรก
+ขั้นถัดไปหลังจาก foundation docs คือ scaffold `React + Vite + React Router + Fumadocs MDX/Core + Tailwind` แล้ววาง bilingual content structure และสร้าง topic แรกพร้อม interactive viewer แรก

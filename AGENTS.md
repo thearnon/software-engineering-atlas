@@ -34,26 +34,50 @@ When adding content, connect topics across the software development lifecycle in
 
 The intended future stack is:
 
-- `Next.js`
-- `Fumadocs`
+- `React`
+- `Vite`
+- `React Router`
+- `TypeScript strict`
+- `Fumadocs Core`
+- `Fumadocs MDX`
 - `MDX`
 - `Tailwind CSS`
-- `React viewer components`
-- `JSON/TypeScript schemas`
+- Optional `Fumadocs UI`
+- `Zod`
+- TS inferred types
+- Typed React viewer components
+- `Vitest`
+- `Playwright`
+- `tsc --noEmit` as a required gate
+- Phase 1 search: local metadata index
+- Phase 2 search: Pagefind full-text static search
 
 No app scaffold exists yet. Do not assume package scripts, test commands, or framework files until they are actually added.
 
 Future implementation should keep these concerns distinct:
 
 - `content` for MDX writing
-- `data` for structured knowledge data
-- `viewer` for React components that render interactive views
-- `schema` for data contracts and validation rules
+- `data` for structured knowledge data, preferably typed `.ts` files
+- `viewer` for typed React components that render interactive views
+- `schema` for Zod data contracts and inferred TypeScript types
+- `search` for generated metadata and later Pagefind indexes
+
+## TypeScript and Data Rules
+
+- All application code must be TypeScript.
+- Avoid JavaScript files unless a tool explicitly requires them.
+- Use strict TypeScript.
+- Do not use `any`.
+- Validate structured content with Zod.
+- Prefer typed `.ts` data files over raw `.json` when possible.
+- Viewer components must accept typed props.
+- Viewer data must be validated before it is rendered.
+- Run `tsc --noEmit` before considering implementation work complete.
 
 ## Repository Instructions
 
 - `README.md` is the public project overview.
-- `design.md` is the visual and technical design reference for the app.
+- `DESIGN.md` is the visual and technical design reference for the app.
 - `docs/sea-product-brief.md` is the durable concept brief.
 - `docs/content-model.md` is the content and localization model.
 - `docs/roadmap.md` is the phased delivery direction.

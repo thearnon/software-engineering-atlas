@@ -8,7 +8,7 @@ Deliverables:
 
 - Populate `README.md`
 - Populate `AGENTS.md`
-- Add `design.md`
+- Add `DESIGN.md`
 - Add `docs/sea-product-brief.md`
 - Add `docs/content-model.md`
 - Add `docs/roadmap.md`
@@ -27,17 +27,30 @@ Goal: สร้าง web app foundation สำหรับ SEA
 
 Planned stack:
 
-- Next.js
-- Fumadocs
-- MDX
-- Tailwind CSS
 - React
+- Vite
+- React Router
+- TypeScript strict
+- Fumadocs Core
+- Fumadocs MDX
+- MDX
+- Optional Fumadocs UI
+- Tailwind CSS
+- Zod
+- Vitest
+- Playwright
 
 Deliverables:
 
-- Basic Next.js app
-- Fumadocs content layer
+- Basic React + Vite app
+- React Router locale and topic routes
+- Strict TypeScript setup
+- Fumadocs Core + Fumadocs MDX content layer
 - Tailwind styling setup
+- Zod schema/data contract setup
+- `tsc --noEmit` typecheck script
+- Vitest and Playwright testing setup
+- Phase 1 local metadata search index
 - Initial layout that feels like an atlas, not a generic blog
 - Basic navigation for Thai default locale and English alternate locale
 
@@ -89,11 +102,23 @@ Permission Matrix Viewer
 Deliverables:
 
 - Structured permission data
-- Viewer component
+- Zod-validated typed data
+- Viewer component with typed props
 - Example RBAC matrix
 - Documentation explaining how content, data, viewer, and schema connect
 
-## Phase 6: Deployment
+## Phase 6: Search Upgrade
+
+Goal: ทำให้ SEA ค้นหาเนื้อหาได้ดีขึ้นเมื่อ content เริ่มเยอะ
+
+Deliverables:
+
+- Pagefind full-text static search
+- Locale-aware search results
+- Metadata fallback for topics without indexed full text
+- Search UI that supports Thai and English content
+
+## Phase 7: Deployment
 
 Goal: ทำให้ SEA เปิดดูได้บนเว็บจริง
 
