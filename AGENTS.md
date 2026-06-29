@@ -52,7 +52,8 @@ The intended future stack is:
 - Phase 1 search: local metadata index
 - Phase 2 search: Pagefind full-text static search
 
-No app scaffold exists yet. Do not assume package scripts, test commands, or framework files until they are actually added.
+The app scaffold exists. Use the scripts in `package.json` as the source of truth for commands.
+On Windows PowerShell, prefer `npm.cmd` if `npm.ps1` is blocked by execution policy.
 
 Future implementation should keep these concerns distinct:
 

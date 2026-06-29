@@ -25,6 +25,8 @@ Acceptance:
 
 Goal: สร้าง web app foundation สำหรับ SEA
 
+Status: initial scaffold implemented.
+
 Planned stack:
 
 - React

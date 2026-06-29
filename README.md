@@ -76,6 +76,22 @@ Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffol
 
 ## Current Status
 
-ตอนนี้ repository นี้อยู่ในช่วง **foundation docs** ยังไม่มี app scaffold, package setup, build system, หรือ automated tests
+ตอนนี้ repository นี้มี **Phase 2 app scaffold** แล้ว:
 
-ขั้นถัดไปหลังจาก foundation docs คือ scaffold `React + Vite + React Router + Fumadocs MDX/Core + Tailwind` แล้ววาง bilingual content structure และสร้าง topic แรกพร้อม interactive viewer แรก
+- React + Vite + React Router app shell
+- Strict TypeScript setup
+- Fumadocs MDX/Core content pipeline
+- Tailwind CSS styling
+- Zod-validated typed data
+- Initial bilingual RBAC topic
+- Permission Matrix viewer
+- Local metadata search index
+- Vitest unit tests and Playwright e2e smoke test
+
+Useful commands:
+
+- `npm.cmd run dev`
+- `npm.cmd test`
+- `npm.cmd run typecheck`
+- `npm.cmd run build`
+- `npm.cmd run test:e2e`

@@ -1,0 +1,16 @@
+## ใช้จริงในระบบองค์กรยังไง
+
+RBAC หรือ Role-Based Access Control คือวิธีจัดสิทธิ์โดยให้ผู้ใช้มี role แล้ว role นั้นกำหนดว่า action ไหนทำได้หรือทำไม่ได้
+
+ในระบบ enterprise internal web application เรื่องนี้มักเจอกับ approval workflow, dashboard, report, audit log, และหน้าจอ admin ที่ต้องแยกว่าใครขอดูข้อมูลได้ ใครอนุมัติได้ และใครแก้ configuration ได้
+
+## สิ่งที่ควรระวัง
+
+- อย่าเริ่มจาก role เยอะเกินไป
+- อย่า hard-code permission ไว้ใน UI อย่างเดียว
+- อย่าลืม audit log สำหรับ action สำคัญ
+- ถ้าระบบมีหลายสาขาหรือหลายแผนก อาจต้องมี scope เพิ่มจาก role
+
+## Viewer ที่เกี่ยวข้อง
+
+Permission matrix ด้านล่างช่วยให้เห็นว่า role แต่ละตัวทำ action ไหนได้บ้าง โดยข้อมูลมาจาก typed data ที่ validate ผ่าน Zod ก่อน render
