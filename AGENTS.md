@@ -93,4 +93,9 @@ Future implementation should keep these concerns distinct:
 - Prefer practical examples over textbook-only explanations.
 - Avoid reframing SEA as a date-based blog.
 - Avoid introducing app code, package setup, or build tooling unless explicitly requested.
+- After implementation work, check whether the change affects `README.md`, `README.th.md`, `DESIGN.md`, `docs/sea-product-brief.md`, `docs/content-model.md`, or `docs/roadmap.md`.
+- If a change affects product behavior, UX, routing, localization, content model, architecture boundaries, commands, phase status, or current roadmap coverage, update the relevant existing documentation in the same task.
+- Do not create new files under `docs/` unless the user explicitly requested the new document or approved it after being asked.
+- Prefer updating existing durable docs over adding new docs.
+- In the final response after implementation work, mention which documentation files were checked, updated, or intentionally left unchanged.
 - Before claiming completion, verify edited Markdown can be read as UTF-8 and that documented links still point to existing files.
