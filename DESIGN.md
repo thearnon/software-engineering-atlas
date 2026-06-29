@@ -32,6 +32,12 @@ SEA ควรรู้สึกเหมือน atlas หรือแผนท
 | Accent / interactive | `accent` | Indigo 500 |
 | Accent hover | `accent-hover` | Indigo 400 |
 | Code surface | `code-surface` | Zinc 800 (dark) / Zinc 100 (light) |
+| Success | `success` | Green 500 |
+| Warning | `warning` | Amber 500 |
+| Danger | `danger` | Red 500 |
+| Info | `info` | Sky 500 |
+| Highlight (search) | `highlight` | Yellow 200 (dark) / Yellow 300 (light) |
+| Fallback badge | `fallback` | Zinc 600 bg + Zinc 300 text |
 
 ### Typography
 
@@ -44,6 +50,20 @@ SEA ควรรู้สึกเหมือน atlas หรือแผนท
 - Base size: 16px minimum (สำคัญสำหรับ Thai readability)
 - Line height: 1.7 สำหรับ prose, 1.4 สำหรับ UI
 - Thai font ต้องโหลดผ่าน CSS `@font-face`, Vite asset pipeline, หรือ font provider strategy ที่ควบคุม performance ได้
+
+### Heading Scale
+
+| Context | Element | Size | Weight | Notes |
+| --- | --- | --- | --- | --- |
+| Homepage hero | `.hero-title` | 2.5rem / 40px | 700 | Brand positioning only |
+| Article / page title | `h1` | 1.875rem / 30px | 700 | ใช้ได้ครั้งเดียวต่อหน้า |
+| Section heading | `h2` | 1.5rem / 24px | 600 | ทั้งใน prose และ reference panel |
+| Subsection | `h3` | 1.25rem / 20px | 600 | |
+| Body prose | `p` | 1rem / 16px | 400 | |
+| Card / sidebar label | `.label` | 0.875rem / 14px | 500 | ไม่ใช้ขนาดเล็กกว่านี้สำหรับ Thai |
+| Code inline | `code` | 0.9em (relative) | 400 | |
+
+`h1` ใน article ไม่ใช้ขนาด hero-scale — hero-title ใช้เฉพาะ homepage เท่านั้น
 
 ### Dark / Light Mode
 
@@ -79,6 +99,33 @@ SEA ควรรู้สึกเหมือน atlas หรือแผนท
 - **Sidebar**: collapsible topic tree จัดตาม Atlas Areas ไม่จัดตามวันที่ - collapse เป็น hamburger บน mobile
 - **Content area**: centered, max-width ขึ้นกับ content layer (ดู Section 5)
 - **Atlas map view** (Phase 5+): full-width canvas สำหรับ knowledge graph - ซ่อน sidebar เมื่อเปิด
+
+### Sidebar Design Detail
+
+Sidebar จัดเป็น expandable groups ตาม Atlas Areas 9 หมวด:
+
+```text
+┌─────────────────────────┐
+│ ▼ Architecture           │  ← expanded (active area)
+│   ● RBAC                 │  ← active topic
+│   ○ Clean Architecture   │
+│   ○ Hexagonal Arch       │
+├─────────────────────────┤
+│ ▶ Process                │  ← collapsed group
+├─────────────────────────┤
+│ ▶ Database               │
+│ ▶ Testing                │
+│  …                       │
+└─────────────────────────┘
+```
+
+- Area group label ใช้ภาษาตาม locale ปัจจุบัน (`Architecture` / `สถาปัตยกรรม`)
+- Topic links ใน group ก็ใช้ภาษาตาม locale เช่นกัน
+- Area มี icon หรือ compact marker ได้ แต่ไม่ให้ใหญ่จน icon แย่ง focus จากชื่อหัวข้อ
+- Active area group: highlighted border-left หรือ bg-accent subtle
+- Active topic: `accent` text color + bold weight
+- Collapsed by default ยกเว้น area ที่ active อยู่
+- Mobile: drawer ลอยจากซ้าย, overlay backdrop, close เมื่อ tap backdrop หรือ navigate
 
 ---
 
@@ -267,6 +314,189 @@ Route loader หรือ content helper ต้อง resolve topic จาก `l
 - **Viewers**: fallback เป็น horizontal-scroll table บน `< md` - ไม่บังคับให้ดู interactive canvas บน mobile ขนาดเล็ก
 - **Thai text**: base 16px minimum ไม่มีการลดขนาดต่ำกว่านี้
 - **Touch targets**: minimum 44x44px สำหรับ interactive elements
+
+---
+
+## 11. Homepage / Entry Experience
+
+### Routes
+
+- `/` — redirect ไป `/{defaultLocale}` (`/th`)
+- `/th` และ `/en` — homepage ของ locale นั้น
+
+### Layout
+
+```text
+┌─────────────────────────────────────────────────────┐
+│  [Hero]                                              │
+│   SEA brand + positioning tagline                   │
+│   Search bar (prominent, locale-aware)              │
+├─────────────────────────────────────────────────────┤
+│  [Area Grid]                                         │
+│   9 cards (1 per Atlas Area)                        │
+│   แต่ละ card: icon, area name, brief description,   │
+│   topic count                                       │
+├─────────────────────────────────────────────────────┤
+│  [Featured Starting Topics]                          │
+│   2-3 topic cards แบบ curated — เพื่อให้ผู้อ่าน    │
+│   ใหม่มี entry point ที่ชัด                         │
+├─────────────────────────────────────────────────────┤
+│  [Mini Knowledge Map Preview]   ← Phase 5+          │
+│   แสดง relationship graph แบบ static/scrollable     │
+│   ก่อน Phase 5 ไม่ต้องแสดงส่วนนี้                  │
+└─────────────────────────────────────────────────────┘
+```
+
+### Design Decisions
+
+- ห้ามใช้ "latest posts" หรือ date-sorted content เป็น primary pattern บน homepage
+- Search bar อยู่ใน hero — prominent ไม่ใช่แค่ icon ใน nav
+- Area Grid คือ navigation path หลัก — ออกแบบให้ scan ได้เร็ว
+- Featured Topics คือ curated ไม่ใช่ algorithmic
+
+---
+
+## 12. Area Index Page
+
+### Route
+
+`/{locale}/{area}` เช่น `/th/architecture/`
+
+### Breadcrumb
+
+`Home > Architecture`
+
+### Page Layout
+
+```text
+┌─────────────────────────────────────────────────────┐
+│  [Area Header]                                       │
+│   Area title + description                          │
+│   Lifecycle position: "อยู่ใน SDLC ช่วงไหน"        │
+├─────────────────────────────────────────────────────┤
+│  [Topic Cards Grid]                                  │
+│   แสดง TopicCard ทุก topic ใน area นี้             │
+├─────────────────────────────────────────────────────┤
+│  [Related Areas]                                     │
+│   Chip links ไปยัง area อื่นที่ connect กัน        │
+├─────────────────────────────────────────────────────┤
+│  [Empty State]   ← ถ้ายังไม่มี topic              │
+│   "ยังไม่มีหัวข้อในหมวดนี้"                         │
+│   link กลับ homepage                                │
+└─────────────────────────────────────────────────────┘
+```
+
+### Empty State
+
+แสดงเมื่อ area ยังไม่มี topic ใด ๆ:
+
+- ข้อความ: `"ยังไม่มีหัวข้อในหมวดนี้"` (ไทย) / `"No topics in this area yet"` (EN)
+- Link กลับ homepage
+- ไม่แสดง error หรือ 404 — area มีอยู่จริง แค่ยังไม่มี content
+
+### Area Metadata
+
+Area header ต้องดึงข้อมูลจาก typed data file ไม่ใช่ hard-code ใน UI:
+
+```text
+/src/data/
+  areas.ts    # typed area metadata: id, label (th/en), description, lifecyclePosition, relatedAreas
+```
+
+---
+
+## 13. Component Patterns
+
+### TopicCard
+
+ใช้ใน: area index page, homepage featured topics, related topics section
+
+**Props contract (design-level — ไม่ใช่ TypeScript จริง):**
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `title` | string | ชื่อ topic ตาม locale |
+| `summary` | string | 1-2 ประโยค สรุป topic |
+| `area` | string | area slug |
+| `layers` | `{ article, reference, viewer }` | layer ที่มี content แล้ว |
+| `hasTranslation` | boolean | มี content ใน locale อื่นหรือเปล่า |
+| `href` | string | route ไปยัง topic |
+
+**Visual:**
+
+- Title (bold)
+- Summary excerpt (2 lines max, ellipsis)
+- Area tag (chip style)
+- Layer badges: `Article`, `Reference`, `Viewer` — แสดงเฉพาะที่มี, greyed-out ถ้าไม่มี
+- Fallback badge: `"ไม่มีเวอร์ชัน EN"` หรือ `"No Thai version"` ตาม locale ปัจจุบัน
+
+---
+
+### Callout
+
+ใช้ใน: article, reference panel
+
+| Type | Color | Icon | ใช้เมื่อ |
+| --- | --- | --- | --- |
+| `note` | `info` (Sky) | ℹ | ข้อมูลเพิ่มเติมทั่วไป |
+| `tip` | `success` (Green) | ✓ | คำแนะนำที่ actionable |
+| `warning` | `warning` (Amber) | ⚠ | ต้องระวัง / common mistake |
+| `enterprise` | `accent` (Indigo) | 🏢 | บริบท enterprise โดยเฉพาะ |
+| `definition` | neutral surface | — | นิยาม term / glossary |
+
+**Visual:**
+
+- Colored left border (4px)
+- Icon + optional bold title บรรทัดแรก
+- Body prose
+- ไม่มี background สีจัดจ้าน — subtle tint เท่านั้น
+
+---
+
+### SidebarAreaGroup
+
+**Props contract:**
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `area` | string | area slug |
+| `label` | string | ชื่อ area ตาม locale |
+| `icon` | optional | compact marker |
+| `topics` | `{ href, label, isActive }[]` | topics ใน group |
+| `isExpanded` | boolean | default: false ยกเว้น active area |
+| `hasActiveTopic` | boolean | drive active visual state |
+
+---
+
+### ViewerSkeleton
+
+ใช้ระหว่าง lazy-load ของ viewer component
+
+- Full-width block, height = ประมาณ viewer จริง (เช่น 400px)
+- Animated pulse (Tailwind `animate-pulse`)
+- สีจาก `surface-raised` — ไม่ใช้สีสว่างจนฉูดฉาด
+- ไม่มีข้อความใน skeleton — ใช้ shape เท่านั้น
+
+---
+
+## 14. Loading States & Transitions
+
+### Skeleton States
+
+| Component | Skeleton Shape |
+| --- | --- |
+| `ViewerSkeleton` | Full-width block 400px, animated pulse |
+| Topic card (loading) | Card shape: title bar 60%, summary bar 100%+80%, badge row |
+| Sidebar (loading) | 5-6 stacked rows ความยาวสลับกัน |
+
+### Transition Principles
+
+- ทุก transition ต้องรองรับ `prefers-reduced-motion: reduce` — ถ้า user ตั้งค่านี้ ให้ตัด animation ออกทันที
+- Sidebar collapse/expand: 150ms `ease-out`
+- Viewer mount (fade-in): 200ms `ease-in`
+- Hover states: 100ms
+- Locale switch: route transition ปกติ ไม่มี custom animation
+- ห้ามใช้ spring/bounce หรือ delay > 300ms ในทุกกรณี
 
 ---
 
