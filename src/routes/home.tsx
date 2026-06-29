@@ -1,8 +1,10 @@
 import { Link, Navigate, useParams } from "react-router";
 
+import { HeroSearch } from "@/components/HeroSearch";
 import { getAreasByLocale } from "@/data/areas";
 import { getTopicsByLocale } from "@/data/topics";
 import { defaultLocale, isLocale } from "@/lib/locales";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 export function HomeRoute() {
   const { locale: localeParam } = useParams();
@@ -11,29 +13,27 @@ export function HomeRoute() {
     return <Navigate to={`/${defaultLocale}`} replace />;
   }
 
-  const topics = getTopicsByLocale(localeParam);
-  const areas = getAreasByLocale(localeParam);
+  return <HomeView locale={localeParam} />;
+}
+
+function HomeView({ locale }: { readonly locale: "th" | "en" }) {
+  useDocumentTitle("", true);
+
+  const topics = getTopicsByLocale(locale);
+  const areas = getAreasByLocale(locale);
+
+  const tagline =
+    locale === "th"
+      ? "แผนที่ความรู้แบบ interactive สำหรับ software engineering, architecture และ enterprise web applications"
+      : "An interactive knowledge map for software engineering, architecture, and enterprise web applications.";
 
   return (
     <article className="home-page">
       <section className="hero-section">
         <div>
           <h1>Software Engineering Atlas</h1>
-          <p>
-            แผนที่ความรู้แบบ interactive สำหรับ software engineering,
-            architecture, และ enterprise web applications.
-          </p>
-          <label className="search-panel">
-            <span>{localeParam === "th" ? "ค้นหาใน SEA" : "Search SEA"}</span>
-            <input
-              placeholder={
-                localeParam === "th"
-                  ? "ค้นหา topic, workflow, architecture..."
-                  : "Search topics, workflows, architecture..."
-              }
-              type="search"
-            />
-          </label>
+          <p>{tagline}</p>
+          <HeroSearch locale={locale} />
         </div>
         <section
           className="hero-map"
@@ -48,7 +48,7 @@ export function HomeRoute() {
       </section>
       <section className="area-section" aria-labelledby="areas-title">
         <h2 id="areas-title">
-          {localeParam === "th" ? "สำรวจตามพื้นที่ความรู้" : "Explore by area"}
+          {locale === "th" ? "สำรวจตามพื้นที่ความรู้" : "Explore by area"}
         </h2>
         <div className="area-grid">
           {areas.map((area) => {
@@ -60,7 +60,7 @@ export function HomeRoute() {
               <Link
                 className="area-card"
                 key={area.id}
-                to={`/${localeParam}/${area.id}`}
+                to={`/${locale}/${area.id}`}
               >
                 <span>{area.label}</span>
                 <small>{area.description}</small>
@@ -74,7 +74,7 @@ export function HomeRoute() {
       </section>
       <section className="topic-section" aria-labelledby="topics-title">
         <h2 id="topics-title">
-          {localeParam === "th" ? "หัวข้อเริ่มต้น" : "Featured starting topics"}
+          {locale === "th" ? "หัวข้อเริ่มต้น" : "Featured starting topics"}
         </h2>
         <div className="topic-list">
           {topics.map((topic) => (
@@ -85,6 +85,9 @@ export function HomeRoute() {
             >
               <span>{topic.title}</span>
               <small>{topic.summary}</small>
+              <span className="layer-badges">
+                <span>{topic.layer}</span>
+              </span>
             </Link>
           ))}
         </div>

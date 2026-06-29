@@ -1,8 +1,10 @@
 import { Link, Navigate, useParams } from "react-router";
 
 import { getAreaById, getAreasByLocale } from "@/data/areas";
+import type { AreaEntry } from "@/data/areas";
 import { getTopicsByLocaleAndArea } from "@/data/topics";
 import { defaultLocale, isLocale } from "@/lib/locales";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 export function AreaRoute() {
   const { area: areaParam, locale: localeParam } = useParams();
@@ -17,28 +19,38 @@ export function AreaRoute() {
     return <Navigate to={`/${localeParam}`} replace />;
   }
 
-  const topics = getTopicsByLocaleAndArea(localeParam, area.id);
-  const relatedAreas = getAreasByLocale(localeParam).filter((relatedArea) =>
+  return <AreaView area={area} locale={localeParam} />;
+}
+
+function AreaView({
+  area,
+  locale,
+}: {
+  readonly area: AreaEntry;
+  readonly locale: "th" | "en";
+}) {
+  useDocumentTitle(area.label);
+
+  const topics = getTopicsByLocaleAndArea(locale, area.id);
+  const relatedAreas = getAreasByLocale(locale).filter((relatedArea) =>
     area.relatedAreas.includes(relatedArea.id),
   );
 
   return (
     <article className="area-page">
       <nav className="breadcrumb" aria-label="Breadcrumb">
-        <Link to={`/${localeParam}`}>
-          {localeParam === "th" ? "หน้าแรก" : "Home"}
-        </Link>
+        <Link to={`/${locale}`}>{locale === "th" ? "หน้าแรก" : "Home"}</Link>
         <span>{area.label}</span>
       </nav>
       <header className="area-header">
-        <p>{localeParam === "th" ? "Atlas Area" : "Atlas Area"}</p>
+        <p>Atlas Area</p>
         <h1>{area.label}</h1>
         <span>{area.description}</span>
         <small>{area.lifecyclePosition}</small>
       </header>
       <section className="topic-section" aria-labelledby="area-topics-title">
         <h2 id="area-topics-title">
-          {localeParam === "th" ? "หัวข้อในหมวดนี้" : "Topics in this area"}
+          {locale === "th" ? "หัวข้อในหมวดนี้" : "Topics in this area"}
         </h2>
         {topics.length > 0 ? (
           <div className="topic-list">
@@ -59,12 +71,12 @@ export function AreaRoute() {
         ) : (
           <div className="empty-state">
             <p>
-              {localeParam === "th"
+              {locale === "th"
                 ? "ยังไม่มีหัวข้อในหมวดนี้"
                 : "No topics in this area yet"}
             </p>
-            <Link to={`/${localeParam}`}>
-              {localeParam === "th" ? "กลับหน้าแรก" : "Back to homepage"}
+            <Link to={`/${locale}`}>
+              {locale === "th" ? "กลับหน้าแรก" : "Back to homepage"}
             </Link>
           </div>
         )}
@@ -72,11 +84,11 @@ export function AreaRoute() {
       {relatedAreas.length > 0 ? (
         <section className="related-areas" aria-labelledby="related-areas-title">
           <h2 id="related-areas-title">
-            {localeParam === "th" ? "หมวดที่เกี่ยวข้อง" : "Related areas"}
+            {locale === "th" ? "หมวดที่เกี่ยวข้อง" : "Related areas"}
           </h2>
           <div>
             {relatedAreas.map((relatedArea) => (
-              <Link key={relatedArea.id} to={`/${localeParam}/${relatedArea.id}`}>
+              <Link key={relatedArea.id} to={`/${locale}/${relatedArea.id}`}>
                 {relatedArea.label}
               </Link>
             ))}

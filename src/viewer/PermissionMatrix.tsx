@@ -5,6 +5,7 @@ import type {
 
 interface PermissionMatrixProps {
   readonly data: PermissionMatrixData;
+  readonly caption?: string;
 }
 
 const accessLabels: Record<PermissionAccess, string> = {
@@ -24,15 +25,12 @@ function getAccess(
   );
 }
 
-export function PermissionMatrix({ data }: PermissionMatrixProps) {
+export function PermissionMatrix({ data, caption }: PermissionMatrixProps) {
   return (
     <section className="viewer-panel" aria-labelledby="permission-matrix-title">
       <div className="viewer-panel__header">
         <h2 id="permission-matrix-title">{data.title}</h2>
-        <p>
-          Validated typed data rendered as a role x action matrix for SEA viewer
-          components.
-        </p>
+        {caption !== undefined ? <p>{caption}</p> : null}
       </div>
       <div className="matrix-scroll">
         <table aria-label={data.title} className="permission-matrix">

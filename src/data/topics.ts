@@ -16,6 +16,8 @@ export type { AtlasArea } from "@/data/areas";
 
 export type ContentLayer = "article" | "reference" | "viewer";
 
+export type ViewerId = "permission-matrix";
+
 export interface TopicEntry {
   readonly id: string;
   readonly locale: Locale;
@@ -26,6 +28,7 @@ export interface TopicEntry {
   readonly layer: ContentLayer;
   readonly keywords: readonly string[];
   readonly relatedTopicIds: readonly string[];
+  readonly viewer?: ViewerId;
   readonly Content: ComponentType<MDXProps>;
 }
 
@@ -41,6 +44,7 @@ export const topics = [
     layer: "article",
     keywords: ["RBAC", "สิทธิ์", "role", "permission", "approval workflow"],
     relatedTopicIds: ["audit-log", "approval-workflow", "permission-matrix"],
+    viewer: "permission-matrix",
     Content: ThRbacContent,
   },
   {
@@ -60,6 +64,7 @@ export const topics = [
       "permission inventory",
     ],
     relatedTopicIds: ["rbac", "approval-workflow", "audit-log"],
+    viewer: "permission-matrix",
     Content: ThPermissionMatrixContent,
   },
   {
@@ -105,6 +110,7 @@ export const topics = [
     layer: "article",
     keywords: ["RBAC", "permission", "role", "approval workflow", "audit log"],
     relatedTopicIds: ["audit-log", "approval-workflow", "permission-matrix"],
+    viewer: "permission-matrix",
     Content: EnRbacContent,
   },
   {
@@ -124,6 +130,7 @@ export const topics = [
       "access review",
     ],
     relatedTopicIds: ["rbac", "approval-workflow", "audit-log"],
+    viewer: "permission-matrix",
     Content: EnPermissionMatrixContent,
   },
   {
@@ -182,4 +189,28 @@ export function getTopicByRoute(
     (topic) =>
       topic.locale === locale && topic.area === area && topic.slug === slug,
   );
+}
+
+export function getRelatedTopics(
+  locale: Locale,
+  relatedTopicIds: readonly string[],
+): readonly TopicEntry[] {
+  const related: TopicEntry[] = [];
+
+  for (const id of relatedTopicIds) {
+    const match = topics.find(
+      (topic) => topic.locale === locale && topic.id === id,
+    );
+
+    if (match !== undefined) {
+      related.push(match);
+    }
+  }
+
+  return related;
+}
+
+export function hasTranslation(id: string, locale: Locale): boolean {
+  const target: Locale = locale === "th" ? "en" : "th";
+  return topics.some((topic) => topic.id === id && topic.locale === target);
 }
