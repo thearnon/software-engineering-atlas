@@ -63,6 +63,7 @@ Stack ที่ตั้งใจใช้เมื่อเริ่ม scaffol
 
 ## Foundation Docs
 
+- [Design Reference](design.md)
 - [SEA Product Brief](docs/sea-product-brief.md)
 - [Content Model](docs/content-model.md)
 - [Roadmap](docs/roadmap.md)

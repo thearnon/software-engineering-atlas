@@ -8,6 +8,7 @@ Deliverables:
 
 - Populate `README.md`
 - Populate `AGENTS.md`
+- Add `design.md`
 - Add `docs/sea-product-brief.md`
 - Add `docs/content-model.md`
 - Add `docs/roadmap.md`
@@ -16,6 +17,7 @@ Acceptance:
 
 - Thai text renders correctly as UTF-8
 - README links point to existing docs
+- Design reference is linked from README and recognized by `AGENTS.md`
 - `CLAUDE.md` still imports `AGENTS.md`
 - No app scaffold or package setup is introduced
 
