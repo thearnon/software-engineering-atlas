@@ -90,7 +90,7 @@ The repository currently includes an initial SEA app foundation:
 - Fumadocs MDX/Core content pipeline
 - Tailwind CSS styling
 - Zod-validated typed viewer data
-- Initial bilingual RBAC topic with related seed topics
+- Initial bilingual topic coverage across all 9 Atlas Areas
 - Permission Matrix viewer
 - Local metadata search index
 - Vitest unit tests and Playwright e2e smoke tests
@@ -106,3 +106,4 @@ npm.cmd run typecheck
 npm.cmd run build
 npm.cmd run test:e2e
 ```
+

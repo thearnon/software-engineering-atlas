@@ -1,0 +1,68 @@
+## User Story คืออะไร
+
+User Story คือรูปแบบการเล่า requirement จากมุมของคนที่ต้องใช้ระบบจริง โดยบอกว่าใครต้องการทำอะไร และทำไปเพื่อผลลัพธ์ทางธุรกิจอะไร
+
+แกนของ User Story ไม่ใช่ประโยค template แต่คือการทำให้ทีมเห็น user, goal, workflow และ acceptance criteria เดียวกัน
+
+<Callout type="definition" title="จำสั้น ๆ">
+  User Story เป็นสะพานจาก business need ไปสู่ scope ที่ออกแบบ ทดสอบ และส่งมอบได้
+</Callout>
+
+## ทำไมสำคัญในระบบองค์กร
+
+ใน enterprise internal tool requirement มักกระทบ role, permission, data, report และ approval flow พร้อมกัน
+
+ถ้า story เขียนแค่หน้าจอหรือ field ระบบอาจส่งมอบ UI ได้ แต่ไม่ตอบ process จริงของทีมธุรกิจ
+
+Story ที่ดีช่วยให้ developer, QA, designer และ stakeholder คุยเรื่องเดียวกันก่อนเริ่มออกแบบ solution
+
+## องค์ประกอบหลักของ User Story
+
+- Actor: ใครเป็นคนใช้หรือได้รับผลจาก feature นี้
+- Goal: เขาต้องการทำ action อะไรใน workflow
+- Value: ทำแล้วช่วย business อย่างไร
+- Context: เกิดใน state หรือ scenario ไหน
+- Acceptance Criteria: จะรู้ได้อย่างไรว่าทำถูกแล้ว
+- Constraint: มี role, policy, data หรือ compliance อะไรต้องระวัง
+
+## Case ตัวอย่าง: ขอเปลี่ยน credit limit
+
+As a sales manager, I want to submit a credit limit change request so that finance can review customer risk before the new limit is applied.
+
+Story นี้ยังไม่พอถ้าไม่มี acceptance criteria เช่น request ต้องมีเหตุผล, แนบเอกสารได้, submit แล้วแก้ไม่ได้ และ approver ต้องไม่ใช่คนสร้าง request
+
+เมื่อเติม criteria แล้ว story จะเริ่มเชื่อมไปหา workflow, RBAC, permission matrix, database schema และ acceptance test ได้ทันที
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+User Story เป็นจุดเริ่มของหลาย topic ใน SEA เพราะมันแปล business language ให้กลายเป็น design input
+
+- Approval Workflow: แปลง story เป็น state และ transition
+- Acceptance Testing: แปลง criteria เป็น test scenario
+- Workflow Screen Design: แปลง task เป็นหน้าจอและ action state
+- Database Indexing: query ที่ story ต้องใช้บ่อยอาจกลายเป็น performance requirement
+
+## Common Mistakes
+
+- เขียน story เป็น task ของ developer เช่น "ทำหน้า form" โดยไม่บอก business goal
+- ลืม negative case เช่น reject, return, expired, duplicate หรือ no permission
+- ไม่ระบุ role และ scope ทำให้ RBAC ต้องเดาทีหลัง
+- เขียน criteria กว้างจน QA ทดสอบไม่ได้
+- แยก story ออกจาก workflow ทำให้แต่ละ ticket ดูถูก แต่ระบบรวมกันไม่ครบ
+
+## Checklist ตอนเขียน User Story
+
+- ระบุ actor ที่ใช้ระบบจริง ไม่ใช่แค่ทีมภายในที่ request งาน
+- เขียน goal เป็น action ใน workflow
+- ระบุ business outcome หรือ risk ที่ต้องลด
+- แยก acceptance criteria เป็น scenario ที่ตรวจสอบได้
+- ใส่ role, permission และ state ที่เกี่ยวข้อง
+- เชื่อม story กับ data, report, notification หรือ audit log ถ้ามีผลต่อระบบจริง
+
+<Callout type="tip" title="วิธีคิดที่ใช้ได้จริง">
+  เริ่มจากคำถามว่า "ใครต้องตัดสินใจอะไรจากข้อมูลนี้" แล้วค่อยแตกเป็นหน้าจอ field และ validation
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน Approval Workflow ต่อเพื่อดูว่า story กลายเป็น state ได้อย่างไร แล้วอ่าน Acceptance Testing เพื่อเปลี่ยน criteria เป็น test ที่ป้องกัน regression

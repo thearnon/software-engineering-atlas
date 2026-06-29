@@ -8,6 +8,8 @@ import { defaultLocale, isLocale } from "@/lib/locales";
 import { usePageMeta } from "@/lib/use-document-title";
 import { LifecycleMap } from "@/viewer/LifecycleMap";
 
+const featuredTopicIds = new Set(["user-story", "approval-workflow", "rbac"]);
+
 export function HomeRoute() {
   const { locale: localeParam } = useParams();
 
@@ -20,6 +22,7 @@ export function HomeRoute() {
 
 function HomeView({ locale }: { readonly locale: "th" | "en" }) {
   const topics = getTopicsByLocale(locale);
+  const featuredTopics = topics.filter((topic) => featuredTopicIds.has(topic.id));
   const areas = getAreasByLocale(locale);
 
   const tagline =
@@ -46,6 +49,10 @@ function HomeView({ locale }: { readonly locale: "th" | "en" }) {
             const topicCount = topics.filter(
               (topic) => topic.area === area.id,
             ).length;
+            const topicCountLabel =
+              locale === "th"
+                ? `${topicCount} หัวข้อ`
+                : `${topicCount} ${topicCount === 1 ? "topic" : "topics"}`;
 
             return (
               <Link
@@ -58,9 +65,7 @@ function HomeView({ locale }: { readonly locale: "th" | "en" }) {
                   {area.label}
                 </span>
                 <small>{area.description}</small>
-                <em>
-                  {topicCount} {topicCount === 1 ? "topic" : "topics"}
-                </em>
+                <em>{topicCountLabel}</em>
               </Link>
             );
           })}
@@ -71,7 +76,7 @@ function HomeView({ locale }: { readonly locale: "th" | "en" }) {
           {locale === "th" ? "หัวข้อเริ่มต้น" : "Featured starting topics"}
         </h2>
         <div className="topic-list">
-          {topics.map((topic) => (
+          {featuredTopics.map((topic) => (
             <Link
               className="topic-card"
               key={`${topic.locale}-${topic.id}`}

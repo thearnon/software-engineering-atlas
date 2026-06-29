@@ -1,18 +1,77 @@
-## ใช้จริงในระบบองค์กรยังไง
+## Approval Workflow คืออะไร
 
-Approval Workflow คือขั้นตอนที่ทำให้คำขอหนึ่งรายการผ่านการตรวจสอบ อนุมัติ ปฏิเสธ หรือส่งกลับไปแก้ไข
+Approval Workflow คือลำดับสถานะและ action ที่พาคำขอหนึ่งรายการจากการสร้าง ไปสู่การตรวจสอบ อนุมัติ ปฏิเสธ ส่งกลับ หรือยกเลิก
 
-ตัวอย่างใน enterprise web application คือคำขอซื้อของ การขอสิทธิ์ การอนุมัติเอกสาร และการเปลี่ยน configuration สำคัญ
+ในระบบองค์กร workflow ทำให้การตัดสินใจไม่อยู่ในแชทหรือไฟล์แยก แต่ถูกบันทึกและตรวจสอบได้ในระบบเดียว
 
-## เชื่อมกับ RBAC ยังไง
+<Callout type="definition" title="จำสั้น ๆ">
+  Approval Workflow ตอบว่า request อยู่ state ไหน ใครทำ action ถัดไปได้ และระบบต้องเก็บ evidence อะไรไว้
+</Callout>
 
-Workflow บอกว่าคำขอเดินทางผ่านสถานะไหน ส่วน RBAC บอกว่า role ไหนทำ action ในแต่ละสถานะได้
+## ทำไมสำคัญในระบบองค์กร
 
-ถ้าไม่มี RBAC workflow อาจเปิดให้คนผิดกลุ่มอนุมัติได้ ถ้าไม่มี workflow RBAC ก็เหลือแค่ permission list ที่ไม่เห็น process จริง
+งานอย่างขอซื้อ ขอสิทธิ์ ขอเปลี่ยนข้อมูลลูกค้า หรือแก้ configuration สำคัญ ต้องมีคนตรวจสอบก่อนมีผลจริง
 
-## สิ่งที่ควรระวัง
+Workflow ที่ชัดช่วยลดการอนุมัติผิดคน ลดงานหลุดขั้นตอน และทำให้ support สอบกลับได้ว่าคำขอติดอยู่ตรงไหน
 
-- แยก status ของคำขอออกจาก permission ของผู้ใช้
-- อย่า hard-code approver ไว้ใน UI อย่างเดียว
-- ต้องคิดเรื่อง delegation, escalation และ audit log ตั้งแต่ต้น
-- Acceptance criteria ควรระบุว่า role ไหนทำ action ไหนได้ในแต่ละ status
+ถ้า workflow ไม่ชัด RBAC จะเหลือแค่ permission list และ UI จะไม่รู้ว่าควรแสดง action ไหนในแต่ละสถานะ
+
+## องค์ประกอบหลักของ Approval Workflow
+
+- Request: record ที่ถูกส่งเข้ากระบวนการ
+- Status: draft, submitted, approved, rejected, returned หรือ cancelled
+- Transition: การเปลี่ยน status จาก action หนึ่ง
+- Actor: role ที่ทำ transition ได้
+- Guard rule: เงื่อนไขก่อน transition เช่น scope หรือ amount limit
+- Evidence: comment, attachment, timestamp และ audit log
+
+## Case ตัวอย่าง: credit limit request
+
+Requester สร้าง draft ใส่เหตุผลและเอกสาร แล้ว submit เพื่อให้ approver ตรวจสอบ
+
+Approver อาจ approve, reject หรือ return for revision โดยแต่ละ action ต้องเขียน comment และ audit log
+
+ถ้า request ถูก returned requester แก้ไขแล้ว submit ใหม่ได้ แต่ถ้า approved แล้วไม่ควรแก้โดยไม่เปิด request ใหม่หรือทำ change process อีกชุด
+
+## จาก Workflow สู่ State Model
+
+Workflow ที่ดีควรวาดเป็น state model ก่อนลง UI หรือ code
+
+แต่ละ transition ต้องตอบได้ว่าเริ่มจาก status ไหน ไป status ไหน role ใดทำได้ และต้อง validate rule อะไร
+
+เมื่อมี state model แล้ว RBAC, permission matrix, screen design และ acceptance test จะต่อกันง่ายขึ้น
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+- User Story ให้เหตุผลว่าทำไม workflow นี้ต้องมี
+- RBAC บอก role ที่ทำ action ได้ในแต่ละ state
+- Permission Matrix ทำให้ action ต่อ role review ได้
+- Workflow Screen Design แสดง state และ next action ให้ผู้ใช้เห็น
+- Audit Log บันทึก transition สำคัญเพื่อสอบกลับ
+- Acceptance Testing ยืนยันว่า state และ permission ทำงานจริง
+
+## Common Mistakes
+
+- ใช้ status เป็น permission โดยตรง เช่น submitted แปลว่าใครก็ approve ได้
+- hard-code approver เฉพาะใน UI
+- ไม่มี path สำหรับ reject, return, cancel หรือ expired
+- ไม่คิด delegation และ escalation เมื่อ approver ไม่ว่าง
+- ไม่เก็บเหตุผลของ decision ทำให้ audit ย้อนหลังยาก
+
+## Checklist ตอนออกแบบ Approval Workflow
+
+- ระบุ status ทั้งหมดและความหมายของแต่ละสถานะ
+- ระบุ transition ที่อนุญาตจากแต่ละ status
+- ระบุ role, scope และ guard rule ของแต่ละ action
+- แยก action ของ requester, approver, admin และ auditor
+- กำหนด comment หรือ attachment ที่ต้องมี
+- เขียน audit log สำหรับ transition สำคัญ
+- สร้าง acceptance test สำหรับ happy path และ denied path
+
+<Callout type="enterprise" title="บริบท enterprise">
+  Workflow สำคัญควรออกแบบพร้อม operational path เช่น return, cancel, delegation และ escalation ไม่ใช่มีแค่ approve/reject
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน User Story เพื่อเริ่มจาก requirement แล้วอ่าน Workflow Screen Design เพื่อทำให้ state และ next action ชัดบนหน้าจอ

@@ -3,12 +3,24 @@ import type { MDXProps } from "mdx/types";
 
 import EnPermissionMatrixContent from "@/content/en/architecture/permission-matrix.mdx";
 import EnRbacContent from "@/content/en/architecture/rbac.mdx";
+import EnServiceLayerContent from "@/content/en/code-design/service-layer.mdx";
+import EnDatabaseIndexingContent from "@/content/en/database/database-indexing.mdx";
+import EnDeploymentPipelineContent from "@/content/en/deployment/deployment-pipeline.mdx";
 import EnApprovalWorkflowContent from "@/content/en/process/approval-workflow.mdx";
+import EnUserStoryContent from "@/content/en/requirement/user-story.mdx";
 import EnAuditLogContent from "@/content/en/security/audit-log.mdx";
+import EnAcceptanceTestingContent from "@/content/en/testing/acceptance-testing.mdx";
+import EnWorkflowScreenDesignContent from "@/content/en/ux-ui/workflow-screen-design.mdx";
 import ThPermissionMatrixContent from "@/content/th/architecture/permission-matrix.mdx";
 import ThRbacContent from "@/content/th/architecture/rbac.mdx";
+import ThServiceLayerContent from "@/content/th/code-design/service-layer.mdx";
+import ThDatabaseIndexingContent from "@/content/th/database/database-indexing.mdx";
+import ThDeploymentPipelineContent from "@/content/th/deployment/deployment-pipeline.mdx";
 import ThApprovalWorkflowContent from "@/content/th/process/approval-workflow.mdx";
+import ThUserStoryContent from "@/content/th/requirement/user-story.mdx";
 import ThAuditLogContent from "@/content/th/security/audit-log.mdx";
+import ThAcceptanceTestingContent from "@/content/th/testing/acceptance-testing.mdx";
+import ThWorkflowScreenDesignContent from "@/content/th/ux-ui/workflow-screen-design.mdx";
 import type { AtlasArea } from "@/data/areas";
 import type { Locale } from "@/lib/locales";
 
@@ -34,6 +46,50 @@ export interface TopicEntry {
 
 export const topics = [
   {
+    id: "user-story",
+    locale: "th",
+    area: "requirement",
+    slug: "user-story",
+    title: "User Story คืออะไร",
+    summary:
+      "วิธีเล่า requirement จากมุมผู้ใช้ เพื่อเชื่อม business need ไปสู่ workflow, acceptance criteria และ test.",
+    layer: "article",
+    keywords: [
+      "user story",
+      "requirement",
+      "acceptance criteria",
+      "workflow",
+      "scope",
+    ],
+    relatedTopicIds: [
+      "approval-workflow",
+      "acceptance-testing",
+      "workflow-screen-design",
+      "database-indexing",
+    ],
+    Content: ThUserStoryContent,
+  },
+  {
+    id: "approval-workflow",
+    locale: "th",
+    area: "process",
+    slug: "approval-workflow",
+    title: "Approval Workflow คืออะไร",
+    summary:
+      "ลำดับการตรวจสอบและอนุมัติคำขอในระบบธุรกิจ เช่น ขอสิทธิ์ ขอซื้อ หรือแก้ configuration.",
+    layer: "article",
+    keywords: ["approval workflow", "อนุมัติ", "request", "status", "workflow"],
+    relatedTopicIds: [
+      "user-story",
+      "rbac",
+      "permission-matrix",
+      "acceptance-testing",
+      "workflow-screen-design",
+      "audit-log",
+    ],
+    Content: ThApprovalWorkflowContent,
+  },
+  {
     id: "rbac",
     locale: "th",
     area: "architecture",
@@ -43,7 +99,13 @@ export const topics = [
       "Role-Based Access Control สำหรับออกแบบสิทธิ์ใน enterprise internal web application.",
     layer: "article",
     keywords: ["RBAC", "สิทธิ์", "role", "permission", "approval workflow"],
-    relatedTopicIds: ["audit-log", "approval-workflow", "permission-matrix"],
+    relatedTopicIds: [
+      "approval-workflow",
+      "permission-matrix",
+      "audit-log",
+      "service-layer",
+      "workflow-screen-design",
+    ],
     viewer: "permission-matrix",
     Content: ThRbacContent,
   },
@@ -63,22 +125,111 @@ export const topics = [
       "action",
       "permission inventory",
     ],
-    relatedTopicIds: ["rbac", "approval-workflow", "audit-log"],
+    relatedTopicIds: [
+      "rbac",
+      "approval-workflow",
+      "acceptance-testing",
+      "audit-log",
+    ],
     viewer: "permission-matrix",
     Content: ThPermissionMatrixContent,
   },
   {
-    id: "approval-workflow",
+    id: "service-layer",
     locale: "th",
-    area: "process",
-    slug: "approval-workflow",
-    title: "Approval Workflow คืออะไร",
+    area: "code-design",
+    slug: "service-layer",
+    title: "Service Layer คืออะไร",
     summary:
-      "ลำดับการตรวจสอบและอนุมัติคำขอในระบบธุรกิจ เช่น ขอสิทธิ์ ขอซื้อ หรือแก้ configuration.",
+      "ชั้น application logic ที่รับ use case จาก UI หรือ API แล้วประสาน domain rule, permission, transaction และ integration.",
     layer: "article",
-    keywords: ["approval workflow", "อนุมัติ", "request", "status", "workflow"],
-    relatedTopicIds: ["rbac", "permission-matrix", "audit-log"],
-    Content: ThApprovalWorkflowContent,
+    keywords: [
+      "service layer",
+      "application service",
+      "use case",
+      "transaction",
+      "code design",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "rbac",
+      "database-indexing",
+      "acceptance-testing",
+      "audit-log",
+    ],
+    Content: ThServiceLayerContent,
+  },
+  {
+    id: "database-indexing",
+    locale: "th",
+    area: "database",
+    slug: "database-indexing",
+    title: "Database Indexing คืออะไร",
+    summary:
+      "การออกแบบ index เพื่อให้ query สำคัญของระบบธุรกิจเร็วขึ้น โดยยังคุม trade-off ด้าน write และ migration.",
+    layer: "article",
+    keywords: [
+      "database indexing",
+      "index",
+      "query performance",
+      "schema",
+      "migration",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "service-layer",
+      "acceptance-testing",
+      "deployment-pipeline",
+    ],
+    Content: ThDatabaseIndexingContent,
+  },
+  {
+    id: "acceptance-testing",
+    locale: "th",
+    area: "testing",
+    slug: "acceptance-testing",
+    title: "Acceptance Testing คืออะไร",
+    summary:
+      "การทดสอบจาก acceptance criteria เพื่อยืนยันว่า workflow สำคัญทำงานตรงกับ business rule.",
+    layer: "article",
+    keywords: [
+      "acceptance testing",
+      "acceptance criteria",
+      "testing",
+      "workflow",
+      "regression",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "approval-workflow",
+      "permission-matrix",
+      "deployment-pipeline",
+    ],
+    Content: ThAcceptanceTestingContent,
+  },
+  {
+    id: "deployment-pipeline",
+    locale: "th",
+    area: "deployment",
+    slug: "deployment-pipeline",
+    title: "Deployment Pipeline คืออะไร",
+    summary:
+      "เส้นทางจาก code change ไปสู่ production ผ่าน build, test, release, rollback และ observability gate.",
+    layer: "article",
+    keywords: [
+      "deployment pipeline",
+      "CI/CD",
+      "release",
+      "rollback",
+      "observability",
+    ],
+    relatedTopicIds: [
+      "acceptance-testing",
+      "database-indexing",
+      "service-layer",
+      "audit-log",
+    ],
+    Content: ThDeploymentPipelineContent,
   },
   {
     id: "audit-log",
@@ -96,8 +247,82 @@ export const topics = [
       "traceability",
       "incident",
     ],
-    relatedTopicIds: ["rbac", "approval-workflow", "permission-matrix"],
+    relatedTopicIds: [
+      "rbac",
+      "approval-workflow",
+      "permission-matrix",
+      "deployment-pipeline",
+    ],
     Content: ThAuditLogContent,
+  },
+  {
+    id: "workflow-screen-design",
+    locale: "th",
+    area: "ux-ui",
+    slug: "workflow-screen-design",
+    title: "Workflow Screen Design คืออะไร",
+    summary:
+      "การออกแบบหน้าจอให้ผู้ใช้เห็นสถานะ งานถัดไป สิทธิ์ที่ทำได้ และเหตุผลเมื่อ action ถูกจำกัด.",
+    layer: "article",
+    keywords: [
+      "workflow screen",
+      "UX",
+      "UI",
+      "permission state",
+      "internal tools",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "approval-workflow",
+      "rbac",
+      "acceptance-testing",
+      "audit-log",
+    ],
+    Content: ThWorkflowScreenDesignContent,
+  },
+  {
+    id: "user-story",
+    locale: "en",
+    area: "requirement",
+    slug: "user-story",
+    title: "User Story",
+    summary:
+      "A requirement format that connects user intent to workflow, acceptance criteria, and tests.",
+    layer: "article",
+    keywords: [
+      "user story",
+      "requirement",
+      "acceptance criteria",
+      "workflow",
+      "scope",
+    ],
+    relatedTopicIds: [
+      "approval-workflow",
+      "acceptance-testing",
+      "workflow-screen-design",
+      "database-indexing",
+    ],
+    Content: EnUserStoryContent,
+  },
+  {
+    id: "approval-workflow",
+    locale: "en",
+    area: "process",
+    slug: "approval-workflow",
+    title: "Approval Workflow",
+    summary:
+      "The review and approval path for requests such as access, purchasing, or configuration changes.",
+    layer: "article",
+    keywords: ["approval workflow", "approval", "request", "status", "workflow"],
+    relatedTopicIds: [
+      "user-story",
+      "rbac",
+      "permission-matrix",
+      "acceptance-testing",
+      "workflow-screen-design",
+      "audit-log",
+    ],
+    Content: EnApprovalWorkflowContent,
   },
   {
     id: "rbac",
@@ -109,7 +334,13 @@ export const topics = [
       "A practical RBAC entry point for permissions in enterprise internal web applications.",
     layer: "article",
     keywords: ["RBAC", "permission", "role", "approval workflow", "audit log"],
-    relatedTopicIds: ["audit-log", "approval-workflow", "permission-matrix"],
+    relatedTopicIds: [
+      "approval-workflow",
+      "permission-matrix",
+      "audit-log",
+      "service-layer",
+      "workflow-screen-design",
+    ],
     viewer: "permission-matrix",
     Content: EnRbacContent,
   },
@@ -129,22 +360,111 @@ export const topics = [
       "action",
       "access review",
     ],
-    relatedTopicIds: ["rbac", "approval-workflow", "audit-log"],
+    relatedTopicIds: [
+      "rbac",
+      "approval-workflow",
+      "acceptance-testing",
+      "audit-log",
+    ],
     viewer: "permission-matrix",
     Content: EnPermissionMatrixContent,
   },
   {
-    id: "approval-workflow",
+    id: "service-layer",
     locale: "en",
-    area: "process",
-    slug: "approval-workflow",
-    title: "Approval Workflow",
+    area: "code-design",
+    slug: "service-layer",
+    title: "Service Layer",
     summary:
-      "The review and approval path for requests such as access, purchasing, or configuration changes.",
+      "An application logic boundary that coordinates use cases, domain rules, permissions, transactions, and integrations.",
     layer: "article",
-    keywords: ["approval workflow", "approval", "request", "status", "workflow"],
-    relatedTopicIds: ["rbac", "permission-matrix", "audit-log"],
-    Content: EnApprovalWorkflowContent,
+    keywords: [
+      "service layer",
+      "application service",
+      "use case",
+      "transaction",
+      "code design",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "rbac",
+      "database-indexing",
+      "acceptance-testing",
+      "audit-log",
+    ],
+    Content: EnServiceLayerContent,
+  },
+  {
+    id: "database-indexing",
+    locale: "en",
+    area: "database",
+    slug: "database-indexing",
+    title: "Database Indexing",
+    summary:
+      "Designing indexes for important business queries while managing write, storage, and migration trade-offs.",
+    layer: "article",
+    keywords: [
+      "database indexing",
+      "index",
+      "query performance",
+      "schema",
+      "migration",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "service-layer",
+      "acceptance-testing",
+      "deployment-pipeline",
+    ],
+    Content: EnDatabaseIndexingContent,
+  },
+  {
+    id: "acceptance-testing",
+    locale: "en",
+    area: "testing",
+    slug: "acceptance-testing",
+    title: "Acceptance Testing",
+    summary:
+      "Testing from acceptance criteria to confirm that important workflows match business rules.",
+    layer: "article",
+    keywords: [
+      "acceptance testing",
+      "acceptance criteria",
+      "testing",
+      "workflow",
+      "regression",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "approval-workflow",
+      "permission-matrix",
+      "deployment-pipeline",
+    ],
+    Content: EnAcceptanceTestingContent,
+  },
+  {
+    id: "deployment-pipeline",
+    locale: "en",
+    area: "deployment",
+    slug: "deployment-pipeline",
+    title: "Deployment Pipeline",
+    summary:
+      "The path from code change to production through build, test, release, rollback, and observability gates.",
+    layer: "article",
+    keywords: [
+      "deployment pipeline",
+      "CI/CD",
+      "release",
+      "rollback",
+      "observability",
+    ],
+    relatedTopicIds: [
+      "acceptance-testing",
+      "database-indexing",
+      "service-layer",
+      "audit-log",
+    ],
+    Content: EnDeploymentPipelineContent,
   },
   {
     id: "audit-log",
@@ -162,8 +482,38 @@ export const topics = [
       "incident",
       "compliance",
     ],
-    relatedTopicIds: ["rbac", "approval-workflow", "permission-matrix"],
+    relatedTopicIds: [
+      "rbac",
+      "approval-workflow",
+      "permission-matrix",
+      "deployment-pipeline",
+    ],
     Content: EnAuditLogContent,
+  },
+  {
+    id: "workflow-screen-design",
+    locale: "en",
+    area: "ux-ui",
+    slug: "workflow-screen-design",
+    title: "Workflow Screen Design",
+    summary:
+      "Designing screens that show status, next actions, allowed permissions, and reasons when actions are restricted.",
+    layer: "article",
+    keywords: [
+      "workflow screen",
+      "UX",
+      "UI",
+      "permission state",
+      "internal tools",
+    ],
+    relatedTopicIds: [
+      "user-story",
+      "approval-workflow",
+      "rbac",
+      "acceptance-testing",
+      "audit-log",
+    ],
+    Content: EnWorkflowScreenDesignContent,
   },
 ] as const satisfies readonly TopicEntry[];
 

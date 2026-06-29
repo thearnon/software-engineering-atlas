@@ -1,0 +1,69 @@
+## What a Deployment Pipeline is
+
+A Deployment Pipeline is the automated path that moves a code change from a developer machine to production through build, test, review, release, and rollback planning.
+
+For enterprise systems, the pipeline is a control point that helps teams deliver software repeatedly while reducing manual release risk.
+
+<Callout type="definition" title="Short version">
+  A good pipeline does more than deploy. It proves a change is ready and can be rolled back when trouble appears.
+</Callout>
+
+## Why it matters in enterprise systems
+
+Enterprise web applications often include migrations, permission changes, feature flags, integrations, and reports that affect several teams.
+
+Without a clear pipeline, releases depend on manual checklists, memory, and late discovery when production fails.
+
+A pipeline turns quality gates, audit trail, and operational readiness into part of delivery.
+
+## Core parts of a Deployment Pipeline
+
+- Build: compile and bundle the application
+- Typecheck: verify TypeScript contracts
+- Test: unit, integration, acceptance, or e2e checks that matter
+- Migration: database changes with rollout and rollback plans
+- Release: deploy to the target environment
+- Observe: monitor logs, metrics, and errors after release
+- Rollback: return to a version or disable a risky feature
+
+## Example case: adding an index and changing approval rules
+
+One change may add a database index for faster approval lists and update a service rule that prevents self-approval.
+
+The pipeline should run typecheck, permission tests, migration checks, and staging deployment before production.
+
+After release, the team should watch query latency, error rate, and audit logs for unusual denied actions.
+
+## How it connects to other topics
+
+Deployment Pipeline is near the end of the SDLC, but it receives work from every earlier layer.
+
+- Acceptance Testing becomes a release gate.
+- Database Indexing needs migration strategy.
+- Service Layer must pass typecheck and tests.
+- Audit Log helps verify production behavior after deploy.
+
+## Common mistakes
+
+- Having a pipeline while important tests only run on a developer machine
+- Deploying database migrations without rollback or backward compatibility
+- Skipping smoke tests after release
+- Losing evidence of which version deployed when
+- Fixing production manually without bringing the change back into code or pipeline
+
+## Design checklist
+
+- Require typecheck and baseline tests before build passes.
+- Keep environments and secrets separated.
+- Plan migrations for schema or index changes.
+- Add smoke tests for important workflows.
+- Link each release to a commit or build artifact.
+- Prepare rollback or feature flags for risky changes.
+
+<Callout type="enterprise" title="Enterprise context">
+  A pipeline is part of governance because it shows which change passed which gate, who approved it, and when the system was deployed.
+</Callout>
+
+## Read next
+
+Read Acceptance Testing to choose meaningful gates, then Audit Log to understand production evidence after release.

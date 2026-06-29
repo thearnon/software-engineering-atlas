@@ -1,0 +1,69 @@
+## What Workflow Screen Design is
+
+Workflow Screen Design is the design of screens for work that has statuses, steps, permissions, and several possible actions, such as requests, approvals, or review queues.
+
+The goal is not only to make a form look good. The screen must show where the work is, what can happen next, and why some actions are restricted.
+
+<Callout type="definition" title="Short version">
+  A good workflow screen makes state, next action, permission, and evidence readable without asking system support.
+</Callout>
+
+## Why it matters in enterprise systems
+
+Internal tools are often used every day by people who need to decide quickly and avoid mistakes.
+
+If the UI hides status or denial reasons, users create support tickets or move the work outside the system.
+
+Good screens reduce training, reduce errors, and make system rules more transparent.
+
+## Core parts of a Workflow Screen
+
+- Status indicator: which state the work is in
+- Primary action: the next action this role can take
+- Disabled reason: why an action is unavailable
+- Context panel: information needed for decisions
+- History: prior actions, comments, and audit trail
+- Error state: response when validation or permission fails
+
+## Example case: credit limit request detail
+
+A requester should see whether the request is draft or submitted, and whether they can edit, submit, or view history for the current state.
+
+An approver should see risk context, current limit, requested limit, policy notes, and approve or reject only when the request is in scope.
+
+An auditor should see the record and audit trail, but should not see controls that imply they can change the workflow.
+
+## How it connects to other topics
+
+UX/UI is where the system model becomes visible to people.
+
+- User Story provides screen goals and scenarios.
+- Approval Workflow provides states and transitions.
+- RBAC defines actions each role can take.
+- Acceptance Testing checks important screen scenarios.
+- Audit Log supplies history and evidence.
+
+## Common mistakes
+
+- Hiding buttons without explaining missing permission or wrong state
+- Using color alone to communicate status
+- Making too many important actions visually equal
+- Omitting context the approver needs to decide
+- Letting UI state drift from backend rules
+
+## Design checklist
+
+- Show status and owner clearly.
+- Make the primary action stand out from secondary actions.
+- Explain disabled or denied actions.
+- Show decision context beside the action.
+- Separate requester, approver, admin, and auditor views by role.
+- Validate the screen with key acceptance scenarios.
+
+<Callout type="tip" title="Practical framing">
+  If users have to ask "what should I do next," the screen is not communicating the workflow clearly enough.
+</Callout>
+
+## Read next
+
+Read Approval Workflow to model states, then RBAC to make the UI reflect backend permission rules.

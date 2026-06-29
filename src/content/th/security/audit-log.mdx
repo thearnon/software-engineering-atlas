@@ -1,18 +1,77 @@
-## ใช้จริงในระบบองค์กรยังไง
+## Audit Log คืออะไร
 
-Audit Log คือบันทึกเหตุการณ์สำคัญในระบบ เช่น ใครสร้างคำขอ ใครอนุมัติ ใครแก้สิทธิ์ และเกิดขึ้นเมื่อไร
+Audit Log คือบันทึกเหตุการณ์สำคัญในระบบ เพื่อให้ตรวจสอบย้อนหลังได้ว่าใครทำอะไร เมื่อไร กับข้อมูลใด และในบริบทใด
 
-ใน internal tool ขององค์กร audit log ช่วยให้ตรวจสอบย้อนหลังได้เมื่อเกิดข้อผิดพลาด ข้อโต้แย้ง หรือ security review
+ในระบบองค์กร audit log ไม่ใช่แค่ log สำหรับ developer แต่เป็น evidence สำหรับ support, compliance, security review และ incident investigation
 
-## เชื่อมกับ RBAC ยังไง
+<Callout type="definition" title="จำสั้น ๆ">
+  Audit Log คือหลักฐานเชิงธุรกิจของ action สำคัญ ไม่ใช่ debug log ที่เก็บทุกบรรทัดของระบบ
+</Callout>
 
-RBAC บอกว่าใครทำ action ได้ ส่วน audit log บอกว่า action นั้นเกิดขึ้นจริงโดยใครและในบริบทไหน
+## ทำไมสำคัญในระบบองค์กร
 
-ถ้ามี permission แต่ไม่มี audit log ระบบจะรู้แค่ว่าใครควรทำได้ แต่ไม่รู้ว่าใครทำอะไรไปแล้ว
+ระบบ approval, permission, dashboard และ configuration มักมี action ที่ต้องอธิบายย้อนหลังได้
 
-## สิ่งที่ควรระวัง
+เมื่อเกิดข้อโต้แย้ง ทีมต้องตอบได้ว่าใครอนุมัติ ใครแก้ role ใคร export report หรือใครพยายามทำ action ที่ถูก deny
 
-- อย่า log เฉพาะ action สำเร็จ ควรเก็บ action สำคัญที่ถูกปฏิเสธด้วย
-- อย่าเก็บข้อมูลลับเกินจำเป็นใน log
-- ต้องมี timestamp, actor, action, target และ context ที่พอสอบกลับได้
-- Audit log ควร query ได้เมื่อ support, compliance หรือ incident review ต้องใช้
+ถ้าไม่มี audit log ระบบอาจรู้แค่ว่าใครควรมีสิทธิ์ แต่ไม่รู้ว่าเกิดอะไรขึ้นจริง
+
+## องค์ประกอบหลักของ Audit Log
+
+- Actor: user หรือ service ที่ทำ action
+- Action: สิ่งที่เกิดขึ้น เช่น submit, approve, reject, change role
+- Target: record หรือ resource ที่ถูกกระทำ
+- Timestamp: เวลาเกิดเหตุการณ์
+- Outcome: success, denied หรือ failed
+- Context: role, scope, IP, request id หรือ policy ที่เกี่ยวข้อง
+- Reason: comment หรือ business reason เมื่อ action ต้องอธิบาย
+
+## Case ตัวอย่าง: approve credit limit request
+
+เมื่อ approver อนุมัติ request ระบบควรเก็บ actor, action, request id, old status, new status, timestamp และ comment
+
+ถ้า approver นอก scope พยายาม approve ระบบอาจเก็บ denied audit event เพื่อให้ security review เห็น pattern ผิดปกติ
+
+ถ้า admin เปลี่ยน role ของผู้ใช้ ระบบต้องเก็บทั้ง actor, target user, role เดิม, role ใหม่ และเหตุผลของการเปลี่ยน
+
+## จาก Audit Log สู่การสอบกลับ
+
+Audit log ที่ดีต้อง query ได้ตาม actor, target, action, time range และ request id
+
+ข้อความควรอ่านได้พอสำหรับคน support หรือ auditor โดยไม่ต้องเปิด source code เพื่อแปล event name
+
+แต่ log ไม่ควรเก็บข้อมูลลับเกินจำเป็น เช่น token, password, full personal data หรือข้อมูลที่ policy ห้ามเก็บ
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+- RBAC ตัดสินว่า action ทำได้หรือไม่
+- Approval Workflow สร้าง transition ที่ควรบันทึก
+- Permission Matrix ช่วยเลือก action ที่ต้อง audit
+- Deployment Pipeline ใช้ log ตรวจพฤติกรรมหลัง release
+- Workflow Screen Design อาจแสดง history จาก audit trail
+
+## Common Mistakes
+
+- เก็บเฉพาะ success event แล้วมองไม่เห็น denied action สำคัญ
+- ใช้ debug log แทน audit log ทำให้ค้นยากและ format ไม่คงที่
+- เก็บข้อมูลลับมากเกินไปจนสร้างความเสี่ยงใหม่
+- ไม่มี correlation id หรือ target id ทำให้ตามเหตุการณ์ยาก
+- ไม่กำหนด retention และ access control ของ log
+
+## Checklist ตอนออกแบบ Audit Log
+
+- ระบุ action สำคัญที่ต้องสอบกลับได้
+- เก็บ actor, action, target, timestamp และ outcome เสมอ
+- ใส่ context ที่ช่วยอธิบาย role, scope และ policy
+- แยก audit log จาก debug log
+- ทำให้ query ตาม actor, target และช่วงเวลาได้
+- จำกัดข้อมูลลับและกำหนด retention
+- คุมสิทธิ์การดู audit log แยกจากสิทธิ์ใช้งานทั่วไป
+
+<Callout type="warning" title="สิ่งที่ต้องระวัง">
+  Audit log ที่ดีต้องเชื่อถือได้ แต่ก็ต้องเคารพ privacy และ data minimization ไม่ใช่เก็บทุกอย่างแบบไม่เลือก
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน RBAC เพื่อดูการตัดสินสิทธิ์ก่อน action และอ่าน Deployment Pipeline เพื่อดูว่า log ช่วยตรวจ release ใน production ได้อย่างไร

@@ -1,18 +1,77 @@
-## How it appears in enterprise systems
+## What an Approval Workflow is
 
-An approval workflow moves a request through review, approval, rejection, or revision states.
+An Approval Workflow is the sequence of states and actions that moves a request from creation to review, approval, rejection, return, or cancellation.
 
-Common examples include purchase requests, access requests, document approvals, and changes to important configuration.
+In enterprise systems, workflow keeps decisions inside a traceable system instead of scattered across chat or files.
 
-## How it connects to RBAC
+<Callout type="definition" title="Short version">
+  Approval Workflow answers which state a request is in, who can take the next action, and what evidence the system must keep.
+</Callout>
 
-Workflow defines the states a request can move through. RBAC defines which roles can perform actions in each state.
+## Why it matters in enterprise systems
 
-Without RBAC, the wrong group may approve a request. Without workflow, RBAC becomes a flat permission list without process context.
+Purchase requests, access requests, customer data changes, and important configuration changes often need review before taking effect.
 
-## Things to watch
+A clear workflow reduces wrong approvals, missed steps, and support uncertainty about where a request is stuck.
 
-- Keep request status separate from user permissions.
-- Do not hard-code approvers only in the UI.
-- Design delegation, escalation, and audit logs early.
-- Acceptance criteria should name which roles can perform which actions in each status.
+Without workflow, RBAC becomes a flat permission list and the UI cannot know which actions should appear in each state.
+
+## Core parts of an Approval Workflow
+
+- Request: the record moving through the process
+- Status: draft, submitted, approved, rejected, returned, or cancelled
+- Transition: status change caused by an action
+- Actor: the role allowed to make the transition
+- Guard rule: condition before transition, such as scope or amount limit
+- Evidence: comment, attachment, timestamp, and audit log
+
+## Example case: credit limit request
+
+A requester creates a draft, adds reasons and documents, then submits it for review.
+
+An approver can approve, reject, or return for revision. Each decision should capture a comment and audit log.
+
+If the request is returned, the requester can revise and submit again. If it is approved, later changes should go through a new request or a separate change process.
+
+## From workflow to state model
+
+A useful workflow should be drawn as a state model before UI or code implementation.
+
+Each transition should state the starting status, ending status, allowed role, and validation rules.
+
+Once the state model exists, RBAC, permission matrix, screen design, and acceptance tests connect more easily.
+
+## How it connects to other topics
+
+- User Story explains why the workflow exists.
+- RBAC defines which role can act in each state.
+- Permission Matrix makes role-by-action rules reviewable.
+- Workflow Screen Design shows state and next action to users.
+- Audit Log records important transitions for investigation.
+- Acceptance Testing confirms state and permission behavior.
+
+## Common mistakes
+
+- Treating status as permission, as if submitted means anyone can approve
+- Hard-coding approvers only in the UI
+- Missing paths for reject, return, cancel, or expired
+- Ignoring delegation and escalation when approvers are unavailable
+- Not storing decision reasons for later review
+
+## Design checklist
+
+- List every status and its meaning.
+- List allowed transitions from each status.
+- Define role, scope, and guard rules for each action.
+- Separate requester, approver, admin, and auditor actions.
+- Decide which comments or attachments are required.
+- Write audit logs for important transitions.
+- Create acceptance tests for happy paths and denied paths.
+
+<Callout type="enterprise" title="Enterprise context">
+  Important workflows need operational paths such as return, cancel, delegation, and escalation, not only approve/reject.
+</Callout>
+
+## Read next
+
+Read User Story to begin from requirements, then Workflow Screen Design to make state and next actions clear in the interface.

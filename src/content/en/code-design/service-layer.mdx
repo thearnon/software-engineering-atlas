@@ -1,0 +1,69 @@
+## What a Service Layer is
+
+A Service Layer is the code boundary that accepts a use case from UI or API code, then coordinates domain rules, permissions, transactions, repositories, and integrations.
+
+In real systems it often contains commands such as submit request, approve request, recalculate KPI, or sync data from another system.
+
+<Callout type="definition" title="Short version">
+  A Service Layer is not a place to dump all logic. It is a boundary that makes important use cases readable, testable, and transactional.
+</Callout>
+
+## Why it matters in enterprise systems
+
+Enterprise web applications often have rules that cross several concerns: permission, workflow state, database writes, and audit logs.
+
+If that logic is scattered across controllers, components, or SQL callbacks, the system becomes hard to change and hard to test.
+
+A Service Layer gives each business action one clear entry point, making side effects and regressions easier to review.
+
+## Core parts of a Service Layer
+
+- Use case method: a business action name such as submitCreditLimitRequest
+- Input contract: data passed from the UI or API
+- Authorization check: role, permission, and scope
+- Domain rule: business conditions that must pass
+- Transaction boundary: writes that must commit or roll back together
+- Side effect: audit log, notification, integration, or event
+
+## Example case: approving a credit limit request
+
+When an approver clicks approve, the system does more than change a status. It checks role, scope, amount limit, self-approval rules, and current state.
+
+Then the service updates the request, writes an audit log, may send a notification, and commits those changes together.
+
+If the action is split across components, it becomes hard to prove that a release still preserves the same business rule.
+
+## How it connects to other topics
+
+Service Layer sits between requirements and implementation detail.
+
+- User Story names the use case and acceptance criteria.
+- RBAC provides the permission checks before action.
+- Database Indexing supports frequent queries used by the service.
+- Acceptance Testing confirms that the service follows business rules.
+- Audit Log is a side effect the service must create consistently.
+
+## Common mistakes
+
+- Keeping important logic in the UI while the backend becomes a pass-through
+- Making one service so large it becomes a god object
+- Forgetting the transaction boundary for actions that update several resources
+- Hiding every SQL call behind a service without clarifying the use case
+- Mixing domain rules with infrastructure details until tests become painful
+
+## Design checklist
+
+- Name methods after business actions, not tables.
+- Validate input before running domain rules.
+- Enforce authorization in the backend every time.
+- Define the transaction boundary clearly.
+- Write audit logs for important actions.
+- Test allow, deny, and failure paths.
+
+<Callout type="enterprise" title="Enterprise context">
+  For an important workflow, one service method should explain who can call it, which state changes, which data is written, and which audit log is produced.
+</Callout>
+
+## Read next
+
+Read RBAC to design permission checks, then Database Indexing to see how important use case queries should be supported by schema choices.

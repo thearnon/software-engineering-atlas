@@ -1,22 +1,92 @@
-## How it appears in enterprise systems
+## What RBAC is
 
-RBAC, or Role-Based Access Control, assigns users to roles and lets each role define which actions are allowed, denied, or limited.
+RBAC, or Role-Based Access Control, assigns users to roles and lets those roles define which actions are allowed, denied, or limited.
 
-In enterprise internal web applications, RBAC usually appears around approval workflows, dashboards, reports, audit logs, and admin screens where access needs to be explicit and reviewable.
+The core idea is to avoid attaching permissions directly to individual users. Permissions belong to roles, and users receive roles based on their responsibility in the system.
 
-<Callout type="enterprise" title="Enterprise context">
-  Inside internal systems, RBAC almost always travels with an approval workflow
-  and an audit log. Designing the three together from the start avoids costly
-  rework later.
+The main RBAC question is: in this context, what role does the user have, and can that role perform this action?
+
+<Callout type="definition" title="Short version">
+  RBAC separates users, roles, and permissions so access rules can be reviewed as a system instead of scattered across screens.
 </Callout>
 
-## Things to watch
+## Why RBAC matters in enterprise systems
 
-- Do not start with too many roles.
-- Do not hard-code permission logic only in the UI.
-- Keep audit logs for important actions.
-- Add scope when departments, branches, or ownership boundaries matter.
+In enterprise internal web applications, permissions do more than hide buttons. They affect business data, workflow decisions, and accountability.
+
+Approval systems, dashboards, KPI reports, admin consoles, and audit tools must answer who can view, approve, configure, and review sensitive activity.
+
+Without explicit RBAC, teams often hard-code checks in many places. Role changes and business-rule changes then become risky and hard to test.
+
+<Callout type="enterprise" title="Enterprise context">
+  RBAC usually needs approval workflow, permission matrix, and audit log design beside it because actions often depend on role, state, and data scope.
+</Callout>
+
+## Core parts of RBAC
+
+- User: the person or account using the system
+- Role: a responsibility group such as Requester, Approver, Admin, or Auditor
+- Permission: an action such as create, submit, approve, reject, configure, or view log
+- Scope: data boundaries such as department, branch, owner, or amount limit
+- Policy: rules that role alone cannot express, such as no self-approval
+
+## Example case: credit limit change request
+
+A requester creates, edits, and submits a request. After submission, they should not edit it unless an approver returns it.
+
+An approver can approve or reject only requests in their scope, within their amount limit, and not created by themselves.
+
+An admin manages role configuration but should not automatically become the business approver for every request.
+
+An auditor can read requests and audit logs, but should not change business data or approve on someone else's behalf.
+
+## From case to Permission Matrix
+
+A permission matrix turns the case into a role-by-action table. Cells show Allow, Limited, or Deny.
+
+For example, Approver may be allowed to approve within scope, while Requester is denied for the same action.
+
+Admin may be allowed to manage role configuration, but that does not mean Admin should approve business requests.
+
+The matrix below uses the credit limit request case so business, development, QA, and security reviewers can inspect the same rules.
+
+## How RBAC connects to other topics
+
+- Authentication proves who the user is before RBAC decides what they can do.
+- Authorization is the broader concept; RBAC is one authorization model.
+- Permission Matrix makes RBAC visible, reviewable, and testable.
+- Approval Workflow tells which state an action belongs to.
+- Audit Log records important actions after access decisions happen.
+- Service Layer enforces backend authorization for real business actions.
+- Workflow Screen Design shows allowed and denied actions clearly to users.
+
+## Common mistakes
+
+- Starting from organization job titles and creating too many roles
+- Checking permissions only in the UI while APIs remain callable
+- Giving Admin unrestricted business approval power
+- Forgetting data scope such as branch, department, owner, or amount limit
+- Not logging important denied actions
+- Not turning the permission matrix into test cases
+
+## RBAC design checklist
+
+- Name important actions as verbs: create, submit, approve, reject, configure, view log.
+- Keep system administration separate from business approval.
+- Define scope for each role.
+- Define Allow, Limited, and Deny so the team uses the same terms.
+- Write the permission matrix before implementing risky workflows.
+- Test allow, deny, and limited cases.
+- Decide which actions require audit logs during design.
+
+<Callout type="tip" title="Practical framing">
+  Start from important workflow actions first, then ask which roles should perform them. Do not start by inventing a long role list.
+</Callout>
+
+## Read next
+
+Read Permission Matrix to turn access rules into a reviewable table. Then read Approval Workflow and Audit Log to connect permissions to process and evidence.
 
 ## Related viewer
 
-The permission matrix below shows which role can perform each action. Its data comes from typed source data validated with Zod before rendering.
+The permission matrix below uses the credit limit request case to show which roles can perform each action and where scope or policy makes a decision limited.

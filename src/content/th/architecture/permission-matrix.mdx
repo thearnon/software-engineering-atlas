@@ -1,18 +1,75 @@
-## ใช้จริงในระบบองค์กรยังไง
+## Permission Matrix คืออะไร
 
-Permission Matrix คือตารางที่ทำให้เห็นว่า role แต่ละตัวทำ action ไหนได้บ้างในระบบ
+Permission Matrix คือตารางที่แสดงว่า role แต่ละตัวทำ action ใดได้บ้าง โดยมักใช้ผลลัพธ์เป็น Allow, Limited หรือ Deny
 
-ในระบบองค์กร matrix ช่วยให้ product, business, developer, QA และ security review คุยเรื่องสิทธิ์ด้วยภาพเดียวกัน
+Matrix ช่วยเปลี่ยน requirement เรื่องสิทธิ์จากข้อความกระจัดกระจายให้กลายเป็น reference ที่ทีม review และ test ได้
 
-## เชื่อมกับ RBAC ยังไง
+<Callout type="definition" title="จำสั้น ๆ">
+  Permission Matrix คือภาษากลางระหว่าง business rule, RBAC, workflow, test case และ security review
+</Callout>
 
-RBAC คือแนวคิด ส่วน permission matrix คือรูปแบบที่ทำให้แนวคิดนั้นตรวจสอบและทดสอบได้
+## ทำไมสำคัญในระบบองค์กร
 
-Matrix ที่ดีควรเชื่อมกับ workflow state, audit log และ test case ไม่ใช่เป็นเอกสารแยกที่ไม่มีใครดูแล
+ระบบองค์กรมีสิทธิ์ที่เกี่ยวกับเงิน ข้อมูลลูกค้า การอนุมัติ และ configuration สำคัญ
 
-## สิ่งที่ควรระวัง
+ถ้าทีมคุยสิทธิ์กันด้วยคำกว้าง ๆ เช่น admin ทำได้ทุกอย่าง หรือ manager เห็นข้อมูลทีม จะเกิดช่องว่างตอนลง code
 
-- อย่าใช้ matrix แทน domain rule ทั้งหมด
-- ระบุ action ให้ชัด เช่น view, create, approve, reject, configure
-- แยก allow, limited และ deny ให้เข้าใจง่าย
-- ใช้ matrix เป็น input ให้ test และ review ก่อน release
+Matrix ทำให้ทุกฝ่ายเห็น action เดียวกัน role เดียวกัน และข้อจำกัดเดียวกันก่อน release
+
+## องค์ประกอบหลักของ Permission Matrix
+
+- Role: กลุ่มผู้ใช้ตามหน้าที่ในระบบ
+- Action: สิ่งที่ระบบอนุญาต เช่น view, submit, approve, reject, configure
+- Resource: ข้อมูลหรือ workflow ที่ action กระทำต่อ
+- Decision: Allow, Limited หรือ Deny
+- Condition: scope หรือ policy ที่ทำให้ Limited
+- Evidence: test case หรือ audit log ที่ยืนยัน behavior
+
+## Case ตัวอย่าง: credit limit request
+
+Requester ควร create, edit draft และ submit request ได้ แต่ไม่ควร approve request ของตัวเอง
+
+Approver ควร approve หรือ reject ได้เฉพาะ request ที่อยู่ใน scope และอยู่ใน status ที่พร้อม review
+
+Auditor ควร view request และ audit log ได้ แต่ไม่ควรเปลี่ยน status หรือ configuration
+
+## จาก Matrix สู่ Test Case
+
+Cell หนึ่งใน matrix ควรถูกแปลงเป็น test ได้ เช่น Approver + approve within scope = Allow
+
+Cell ที่เป็น Limited ต้องมี condition ชัด เช่น "เฉพาะ department เดียวกัน" หรือ "amount ไม่เกิน approval limit"
+
+Cell ที่เป็น Deny สำคัญควรมี test และอาจมี audit log ถ้าเป็น action เสี่ยง
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+- RBAC ให้ model ของ role และ permission
+- Approval Workflow ให้ state ที่ action เกิดได้
+- Acceptance Testing แปลง cell เป็น scenario
+- Audit Log บันทึก action สำคัญหลังระบบตัดสินสิทธิ์
+
+## Common Mistakes
+
+- ใช้ matrix เป็นเอกสารครั้งเดียวแล้วไม่อัปเดตตาม code
+- เขียน action กว้างเกินไป เช่น manage ทุกอย่าง
+- ไม่แยก system admin ออกจาก business approver
+- ลืม Limited case ที่ขึ้นกับ scope หรือ policy
+- ไม่เชื่อม matrix กับ test ทำให้ regression หลุดง่าย
+
+## Checklist ตอนทำ Permission Matrix
+
+- ระบุ action เป็นคำกริยาที่ชัด
+- ใช้ role ที่มีความหมายในระบบ ไม่ใช่ job title ทุกแบบ
+- แยก resource หรือ workflow ให้พอเหมาะ
+- นิยาม Allow, Limited และ Deny ให้ตรงกัน
+- เขียน condition ของ Limited ทุก cell
+- เปลี่ยน cell สำคัญเป็น acceptance test
+- ระบุ action ที่ต้องเขียน audit log
+
+<Callout type="tip" title="วิธีคิดที่ใช้ได้จริง">
+  ถ้า cell ใดตอบว่า "แล้วแต่กรณี" ให้เปลี่ยนเป็น Limited และเขียน condition ให้ชัดก่อนลง code
+</Callout>
+
+## Viewer ที่เกี่ยวข้อง
+
+ตารางด้านล่างใช้ case credit limit request เพื่อแสดง role, action และ decision ที่ควรใช้ร่วมกับ RBAC และ acceptance test

@@ -1,18 +1,77 @@
-## How it appears in enterprise systems
+## What an Audit Log is
 
-An audit log records important system events: who created a request, who approved it, who changed access, and when it happened.
+An Audit Log records important system events so teams can trace who did what, when, to which data, and in what context.
 
-In enterprise internal tools, audit logs support traceability when teams investigate mistakes, disputes, or security reviews.
+In enterprise systems, an audit log is not only a developer log. It is evidence for support, compliance, security review, and incident investigation.
 
-## How it connects to RBAC
+<Callout type="definition" title="Short version">
+  An Audit Log is business evidence for important actions, not a debug log that records every internal line.
+</Callout>
 
-RBAC says who is allowed to perform an action. An audit log records who actually performed that action and in what context.
+## Why it matters in enterprise systems
 
-Without audit logs, a system may know who should have access but not what happened after access was granted.
+Approval systems, permission tools, dashboards, and configuration screens often include actions that must be explainable later.
 
-## Things to watch
+When a dispute happens, the team needs to answer who approved, who changed a role, who exported a report, or who tried a denied action.
 
-- Do not log only successful actions; important denied actions can matter too.
-- Do not store more sensitive data than the review process needs.
-- Keep timestamp, actor, action, target, and enough context to investigate later.
-- Make logs searchable for support, compliance, and incident review workflows.
+Without audit logs, the system may know who should have access, but not what actually happened.
+
+## Core parts of an Audit Log
+
+- Actor: the user or service that performed the action
+- Action: what happened, such as submit, approve, reject, or change role
+- Target: the record or resource affected
+- Timestamp: when it happened
+- Outcome: success, denied, or failed
+- Context: role, scope, IP, request id, or related policy
+- Reason: comment or business reason when the action needs explanation
+
+## Example case: approving a credit limit request
+
+When an approver approves a request, the system should store actor, action, request id, old status, new status, timestamp, and comment.
+
+If an out-of-scope approver tries to approve, the system may store a denied audit event so security review can see unusual patterns.
+
+If an admin changes a user role, the system should store actor, target user, old role, new role, and reason for the change.
+
+## From audit log to investigation
+
+A useful audit log can be queried by actor, target, action, time range, and request id.
+
+Messages should be readable enough for support or auditors without opening source code to decode event names.
+
+The log should not store unnecessary secrets, such as tokens, passwords, full personal data, or data that policy says not to retain.
+
+## How it connects to other topics
+
+- RBAC decides whether the action is allowed.
+- Approval Workflow creates transitions that should be recorded.
+- Permission Matrix helps identify actions that need audit events.
+- Deployment Pipeline uses logs to inspect production behavior after release.
+- Workflow Screen Design may show history from the audit trail.
+
+## Common mistakes
+
+- Recording only successful events and missing important denied actions
+- Using debug logs as audit logs, making search and format unreliable
+- Storing too much sensitive data and creating new risk
+- Missing correlation id or target id, making investigation hard
+- Forgetting retention and access control for logs
+
+## Design checklist
+
+- List important actions that must be traceable.
+- Always store actor, action, target, timestamp, and outcome.
+- Add context that explains role, scope, and policy.
+- Keep audit logs separate from debug logs.
+- Support queries by actor, target, and time range.
+- Minimize sensitive data and define retention.
+- Protect audit-log access separately from normal app access.
+
+<Callout type="warning" title="Watch out">
+  A good audit log must be trustworthy, but it must also respect privacy and data minimization.
+</Callout>
+
+## Read next
+
+Read RBAC to understand access decisions before action, then Deployment Pipeline to see how logs support production release review.

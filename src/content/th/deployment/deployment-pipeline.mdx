@@ -1,0 +1,69 @@
+## Deployment Pipeline คืออะไร
+
+Deployment Pipeline คือเส้นทางอัตโนมัติที่พา code change จากเครื่อง developer ไปถึง production ผ่าน build, test, review, release และ rollback plan
+
+สำหรับระบบองค์กร pipeline เป็น control point ที่ช่วยให้ทีมส่ง software ได้สม่ำเสมอโดยลดความเสี่ยงจาก manual step
+
+<Callout type="definition" title="จำสั้น ๆ">
+  Pipeline ที่ดีไม่ได้แค่ deploy ได้ แต่ช่วยพิสูจน์ว่า change พร้อมใช้งานและ rollback ได้เมื่อเกิดปัญหา
+</Callout>
+
+## ทำไมสำคัญในระบบองค์กร
+
+Enterprise web application มักมี migration, permission change, feature flag, integration และ report ที่กระทบหลายทีม
+
+ถ้า release ไม่มี pipeline ที่ชัด ทีมจะพึ่ง checklist มือ, จำขั้นตอนเอง และรู้ตัวช้าเมื่อ production มีปัญหา
+
+Pipeline ทำให้ quality gate, audit trail และ operational readiness เป็นส่วนหนึ่งของ delivery process
+
+## องค์ประกอบหลักของ Deployment Pipeline
+
+- Build: compile และ bundle application
+- Typecheck: ตรวจ contract ของ TypeScript
+- Test: unit, integration, acceptance หรือ e2e ที่สำคัญ
+- Migration: database change ที่มีแผน deploy และ rollback
+- Release: deploy ไป environment ที่กำหนด
+- Observe: monitor log, metric และ error หลัง release
+- Rollback: กลับ version หรือปิด feature ได้เมื่อจำเป็น
+
+## Case ตัวอย่าง: เพิ่ม index และแก้ approval rule
+
+Change หนึ่งอาจเพิ่ม database index เพื่อให้หน้า approval เร็วขึ้น และแก้ service rule ห้าม approver อนุมัติ request ของตัวเอง
+
+Pipeline ต้องรัน typecheck, test permission case, ตรวจ migration และ deploy ไป staging ก่อน production
+
+หลัง release ทีมควรดู query latency, error rate และ audit log ว่ามี denied action ผิดปกติหรือไม่
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+Deployment Pipeline อยู่ปลายทางของ SDLC แต่รับผลจากทุกชั้นก่อนหน้า
+
+- Acceptance Testing เป็น gate ก่อน release
+- Database Indexing ต้องมี migration strategy
+- Service Layer ต้องผ่าน typecheck และ test
+- Audit Log ช่วยตรวจว่า production behavior หลัง deploy ปกติหรือไม่
+
+## Common Mistakes
+
+- มี pipeline แต่ปล่อยให้ test สำคัญรันเฉพาะในเครื่อง developer
+- deploy database migration โดยไม่มีแผน rollback หรือ backward compatibility
+- ไม่มี smoke test หลัง release
+- ไม่เก็บ release evidence ว่า version ไหน deploy เมื่อไร
+- แก้ production ด้วยมือแล้วไม่สะท้อนกลับเข้า code หรือ pipeline
+
+## Checklist ตอนออกแบบ Pipeline
+
+- บังคับ typecheck และ test พื้นฐานก่อน build ผ่าน
+- แยก environment และ secret ให้ชัด
+- มี migration plan สำหรับ schema หรือ index change
+- มี smoke test สำหรับ workflow สำคัญ
+- ผูก release กับ commit หรือ build artifact ที่ trace ได้
+- วาง rollback หรือ feature flag สำหรับ change เสี่ยง
+
+<Callout type="enterprise" title="บริบท enterprise">
+  Pipeline คือส่วนหนึ่งของ governance ด้วย เพราะมันตอบได้ว่า change ไหนผ่าน gate อะไร ใคร approve และระบบถูก deploy เมื่อไร
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน Acceptance Testing เพื่อเลือก gate ที่มีความหมาย แล้วอ่าน Audit Log เพื่อดู evidence หลัง release ใน production

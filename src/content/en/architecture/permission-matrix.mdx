@@ -1,18 +1,75 @@
-## How it appears in enterprise systems
+## What a Permission Matrix is
 
-A permission matrix shows which roles can perform which actions in a system.
+A Permission Matrix is a table that shows which roles can perform which actions, often using decisions such as Allow, Limited, or Deny.
 
-In enterprise products, the matrix gives product, business, development, QA, and security reviewers one shared view of access rules.
+It turns scattered access requirements into a reference the team can review and test.
 
-## How it connects to RBAC
+<Callout type="definition" title="Short version">
+  A Permission Matrix is the shared language between business rules, RBAC, workflow, tests, and security review.
+</Callout>
 
-RBAC is the access-control model. A permission matrix makes that model visible, reviewable, and testable.
+## Why it matters in enterprise systems
 
-A useful matrix connects to workflow states, audit logs, and test cases instead of living as a separate document nobody maintains.
+Enterprise systems contain access rules around money, customer data, approval, and important configuration.
 
-## Things to watch
+If the team discusses access only with broad phrases like "admin can do everything" or "manager sees team data," gaps appear during implementation.
 
-- Do not use the matrix as a substitute for all domain rules.
-- Name actions clearly, such as view, create, approve, reject, and configure.
-- Distinguish allow, limited, and deny states.
-- Use the matrix as input for testing and release review.
+A matrix lets everyone inspect the same actions, roles, and limitations before release.
+
+## Core parts of a Permission Matrix
+
+- Role: a user group based on system responsibility
+- Action: something the system permits, such as view, submit, approve, reject, or configure
+- Resource: the data or workflow the action targets
+- Decision: Allow, Limited, or Deny
+- Condition: scope or policy that makes a decision Limited
+- Evidence: test case or audit log that proves behavior
+
+## Example case: credit limit request
+
+A requester should create, edit draft, and submit a request, but should not approve their own request.
+
+An approver should approve or reject only requests in scope and in a status ready for review.
+
+An auditor should view requests and audit logs, but should not change status or configuration.
+
+## From matrix to test cases
+
+Each matrix cell should be convertible into a test. For example, Approver plus approve within scope equals Allow.
+
+A Limited cell needs a clear condition, such as same department or amount below approval limit.
+
+Important Deny cells should also be tested, and risky denied actions may need audit logs.
+
+## How it connects to other topics
+
+- RBAC provides the model of roles and permissions.
+- Approval Workflow provides the states where actions can happen.
+- Acceptance Testing turns cells into scenarios.
+- Audit Log records important actions after access decisions occur.
+
+## Common mistakes
+
+- Treating the matrix as a one-time document that no longer follows code
+- Naming actions too broadly, such as manage everything
+- Mixing system administrator power with business approval power
+- Forgetting Limited cases based on scope or policy
+- Not linking the matrix to tests
+
+## Design checklist
+
+- Name actions as clear verbs.
+- Use roles that mean something inside the system.
+- Separate resources or workflows at the right granularity.
+- Define Allow, Limited, and Deny consistently.
+- Write the condition for every Limited cell.
+- Turn important cells into acceptance tests.
+- Mark actions that require audit logs.
+
+<Callout type="tip" title="Practical framing">
+  If a cell says "it depends," make it Limited and write the condition before implementation.
+</Callout>
+
+## Related viewer
+
+The table below uses the credit limit request case to show roles, actions, and decisions that support RBAC and acceptance testing.

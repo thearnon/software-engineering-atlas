@@ -1,0 +1,69 @@
+## Database Indexing คืออะไร
+
+Database Indexing คือการสร้างโครงสร้างช่วยค้นหาข้อมูล เพื่อให้ query สำคัญเร็วขึ้นโดยไม่ต้อง scan ข้อมูลทั้งตารางทุกครั้ง
+
+ในระบบธุรกิจ index ไม่ใช่แค่เรื่อง performance แต่เกี่ยวกับ workflow, report, search, SLA และประสบการณ์ของผู้ใช้
+
+<Callout type="definition" title="จำสั้น ๆ">
+  Index คือ trade-off: อ่านเร็วขึ้น แต่ write, storage และ migration อาจแพงขึ้น
+</Callout>
+
+## ทำไมสำคัญในระบบองค์กร
+
+Internal tools มักมีหน้ารายการคำขอ dashboard KPI และ report ที่ query ตาม status, owner, department หรือ date range ซ้ำ ๆ
+
+ถ้าไม่มี index ที่ตรงกับ access pattern หน้าจอเหล่านี้จะช้าลงเมื่อข้อมูลโต และทีมอาจแก้ด้วยการเพิ่ม cache ก่อนเข้าใจ query จริง
+
+Index ที่ดีเริ่มจากคำถามว่า user เปิดข้อมูลแบบไหนบ่อย และ business action ไหนต้องตอบเร็ว
+
+## องค์ประกอบหลักของ Database Indexing
+
+- Query pattern: WHERE, JOIN, ORDER BY และ pagination ที่ใช้จริง
+- Selectivity: column แยกข้อมูลได้ดีแค่ไหน
+- Composite index: ลำดับ column สำคัญเมื่อ query ใช้หลายเงื่อนไข
+- Write cost: insert/update/delete ต้องปรับ index ด้วย
+- Migration plan: index ใหญ่ต้องสร้างอย่างระวังใน production
+- Measurement: ใช้ query plan และ metric ไม่ใช่เดาจากชื่อ column
+
+## Case ตัวอย่าง: หน้ารายการ approval request
+
+หน้าของ approver อาจ query request ที่ `status = submitted`, `department = sales`, `amount <= limit` และ sort ตาม `submitted_at`
+
+Index ที่ช่วยได้อาจเริ่มจาก status, department และ submitted_at แต่ต้องดู query plan จริงว่าฐานข้อมูลเลือกใช้ index อย่างไร
+
+ถ้าระบบมี filter ตาม customer หรือ branch เพิ่ม ต้องดูว่าเป็น use case หลักหรือ filter รองก่อนเพิ่ม index ทุก column
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+Database Indexing เชื่อม requirement กับ operation โดยตรง
+
+- User Story บอกว่าหน้าจอไหนต้องค้นหาหรือ review ข้อมูลเร็ว
+- Service Layer เป็นจุดที่ query สำคัญถูกเรียกใช้
+- Acceptance Testing อาจมี performance expectation สำหรับ workflow หลัก
+- Deployment Pipeline ต้องรองรับ migration ที่สร้าง index อย่างปลอดภัย
+
+## Common Mistakes
+
+- ใส่ index ทุก foreign key หรือทุก column โดยไม่ดู query จริง
+- สร้าง composite index แต่เรียง column ไม่ตรงกับ filter หลัก
+- ไม่คิด write cost ของตารางที่ update บ่อย
+- ไม่วางแผน migration สำหรับ table ใหญ่
+- ใช้ index แทนการออกแบบ query หรือ pagination ที่ถูกต้อง
+
+## Checklist ตอนออกแบบ Index
+
+- เริ่มจากหน้าจอหรือ report ที่ business ใช้บ่อย
+- เขียน query pattern ที่ต้อง optimize ให้ชัด
+- ตรวจ query plan ก่อนและหลังเพิ่ม index
+- เลือก composite index จาก filter และ sort ที่ใช้คู่กันจริง
+- วัดผลด้วย latency และ row scan ไม่ใช่ความรู้สึก
+- มี rollback หรือ migration strategy สำหรับ production
+
+<Callout type="warning" title="สิ่งที่ต้องระวัง">
+  Index ที่ดีใน staging อาจยังเสี่ยงใน production ถ้า data volume, distribution หรือ concurrent write ต่างกันมาก
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน Service Layer เพื่อดูจุดที่ query ถูกเรียก และอ่าน Deployment Pipeline เพื่อวางแผน migration กับ rollback ของ index change
+

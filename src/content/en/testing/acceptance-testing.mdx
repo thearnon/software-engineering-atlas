@@ -1,0 +1,68 @@
+## What Acceptance Testing is
+
+Acceptance Testing checks whether the system satisfies business acceptance criteria, not only whether isolated functions work.
+
+In SEA, this topic is the bridge from requirements to quality gates before release.
+
+<Callout type="definition" title="Short version">
+  An acceptance test answers whether the stakeholder can accept this workflow yet.
+</Callout>
+
+## Why it matters in enterprise systems
+
+Approval systems, dashboards, and admin consoles often contain rules where a small mistake affects real work: the wrong approver, wrong numbers, or data shown beyond permission.
+
+Unit tests help with small logic. Acceptance tests confirm that important flows work from the user and business-rule perspective.
+
+Teams with clear acceptance criteria can turn requirements into tests quickly and catch regression before production.
+
+## Core parts of Acceptance Testing
+
+- Scenario: the business situation being checked
+- Given: initial data, role, and workflow state
+- When: the action the user performs
+- Then: the result the system must show or persist
+- Negative path: no permission, invalid data, or wrong state
+- Evidence: log, notification, status, or record that proves the result
+
+## Example case: submitting a credit limit request
+
+Given a requester has a draft request with required reasons, when they submit it, the system changes status to submitted and writes an audit log.
+
+Given the requester tries to edit after submission, the system rejects the action and explains why through UI or API response.
+
+Given an out-of-scope approver tries to approve, the system denies the action and leaves the original status unchanged.
+
+## How it connects to other topics
+
+Acceptance Testing keeps the atlas from stopping at design. It confirms that the design works.
+
+- User Story provides initial criteria.
+- Approval Workflow provides states and transitions to test.
+- Permission Matrix provides allow, deny, and limited cases.
+- Deployment Pipeline uses tests as release gates.
+
+## Common mistakes
+
+- Testing only the happy path and leaving deny paths to manual QA
+- Coupling tests to UI details so tightly that they become fragile
+- Missing test data for important roles, scopes, and statuses
+- Letting tests drift away from acceptance criteria
+- Forgetting side effects such as audit logs or notifications
+
+## Design checklist
+
+- Turn criteria into verifiable Given, When, Then cases.
+- Cover main roles and no-permission cases.
+- Test important workflow transitions.
+- Check persisted data, not only visible text.
+- Control external dependencies with stubs or fixtures.
+- Run important tests inside the deployment gate.
+
+<Callout type="tip" title="Practical framing">
+  If a criterion cannot become a test, it is probably not clear enough to build and release with confidence.
+</Callout>
+
+## Read next
+
+Read Permission Matrix to find permission test cases, then Deployment Pipeline to decide where those tests should run before production.

@@ -1,0 +1,68 @@
+## Acceptance Testing คืออะไร
+
+Acceptance Testing คือการทดสอบว่าระบบตอบ acceptance criteria ของ business ได้จริง ไม่ใช่แค่ function ทำงานแบบแยกส่วน
+
+ใน SEA หัวข้อนี้คือสะพานจาก requirement ไปสู่ quality gate ก่อน release
+
+<Callout type="definition" title="จำสั้น ๆ">
+  Acceptance test ตอบคำถามว่า stakeholder จะยอมรับ workflow นี้ได้หรือยัง
+</Callout>
+
+## ทำไมสำคัญในระบบองค์กร
+
+ระบบ approval, dashboard หรือ admin console มักมี rule ที่ผิดนิดเดียวกระทบงานจริง เช่น อนุมัติผิดคน คิดยอดผิด หรือแสดงข้อมูลเกินสิทธิ์
+
+Unit test ช่วยเรื่อง logic ย่อย แต่ acceptance test ช่วยยืนยันว่า flow สำคัญทำงานจากมุมผู้ใช้และ business rule
+
+ทีมที่มี acceptance criteria ชัดจะเปลี่ยน requirement เป็น test ได้เร็ว และเห็น regression ก่อนถึง production
+
+## องค์ประกอบหลักของ Acceptance Testing
+
+- Scenario: สถานการณ์ที่ business สนใจ
+- Given: state เริ่มต้นของ data, role และ workflow
+- When: action ที่ user ทำ
+- Then: ผลลัพธ์ที่ระบบต้องแสดงหรือบันทึก
+- Negative path: กรณีไม่มีสิทธิ์ ข้อมูลผิด หรือ state ไม่ถูกต้อง
+- Evidence: log, notification, status หรือ record ที่ต้องตรวจได้
+
+## Case ตัวอย่าง: ส่งคำขอเปลี่ยน credit limit
+
+Given requester มี draft request พร้อมเหตุผลครบ เมื่อกด submit ระบบต้องเปลี่ยน status เป็น submitted และสร้าง audit log
+
+Given requester พยายามแก้ request หลัง submit ระบบต้องปฏิเสธ action และอธิบายเหตุผลที่ UI หรือ API response
+
+Given approver ที่ไม่ได้อยู่ใน scope พยายาม approve ระบบต้อง deny และไม่เปลี่ยน status เดิม
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+Acceptance Testing ทำให้ atlas ไม่หยุดที่การออกแบบ แต่ยืนยันว่า design ทำงานจริง
+
+- User Story ให้ criteria เริ่มต้น
+- Approval Workflow ให้ state และ transition ที่ต้อง test
+- Permission Matrix ให้ allow, deny และ limited case
+- Deployment Pipeline ใช้ test เป็น gate ก่อน release
+
+## Common Mistakes
+
+- เขียน test เฉพาะ happy path แล้วปล่อย deny path ไว้มือคนทดสอบ
+- ผูก test กับรายละเอียด UI มากเกินไปจนเปราะ
+- ไม่เตรียม test data สำหรับ role, scope และ status สำคัญ
+- แยก test ออกจาก acceptance criteria ทำให้ criteria outdated
+- ลืมตรวจ side effect เช่น audit log หรือ notification
+
+## Checklist ตอนออกแบบ Acceptance Test
+
+- แปลง criteria เป็น Given, When, Then ที่ตรวจได้
+- ครอบคลุม role หลักและ no-permission case
+- test transition สำคัญของ workflow
+- ตรวจข้อมูลที่ถูกเขียน ไม่ใช่แค่ข้อความบนหน้า
+- ลด dependency ภายนอกด้วย stub หรือ test fixture ที่ควบคุมได้
+- ให้ test สำคัญรันใน deployment gate
+
+<Callout type="tip" title="วิธีคิดที่ใช้ได้จริง">
+  ถ้า criteria เขียนเป็น test ไม่ได้ แปลว่ายังไม่ชัดพอสำหรับทีมที่จะ build และ release อย่างมั่นใจ
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน Permission Matrix เพื่อหา test case ด้านสิทธิ์ แล้วอ่าน Deployment Pipeline เพื่อดูว่า test เหล่านี้ควรอยู่ตรงไหนก่อน production

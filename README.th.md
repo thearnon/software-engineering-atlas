@@ -90,7 +90,7 @@ Boundary สำคัญ:
 - Fumadocs MDX/Core content pipeline
 - Tailwind CSS styling
 - Zod-validated typed viewer data
-- Initial bilingual RBAC topic พร้อม related seed topics
+- Initial bilingual topic coverage ครบทั้ง 9 Atlas Areas
 - Permission Matrix viewer
 - Local metadata search index
 - Vitest unit tests และ Playwright e2e smoke tests
@@ -106,3 +106,4 @@ npm.cmd run typecheck
 npm.cmd run build
 npm.cmd run test:e2e
 ```
+

@@ -1,0 +1,69 @@
+## Service Layer คืออะไร
+
+Service Layer คือชั้น code ที่รับ use case จาก UI หรือ API แล้วประสาน domain rule, permission, transaction, repository และ integration ให้ทำงานเป็น flow เดียว
+
+ในระบบจริง service layer มักเป็นที่รวมคำสั่งอย่าง submit request, approve request, recalculate KPI หรือ sync data จากระบบภายนอก
+
+<Callout type="definition" title="จำสั้น ๆ">
+  Service Layer ไม่ใช่ที่กอง logic ทุกอย่าง แต่เป็น boundary ที่ทำให้ use case สำคัญอ่านได้ ทดสอบได้ และคุม transaction ได้
+</Callout>
+
+## ทำไมสำคัญในระบบองค์กร
+
+Enterprise web application มักมี rule ข้ามหลายส่วน เช่น permission, workflow state, database update และ audit log
+
+ถ้า logic เหล่านี้กระจายอยู่ใน controller, component หรือ SQL callback ระบบจะเปลี่ยนยากและทดสอบยาก
+
+Service Layer ทำให้ business action หนึ่งรายการมีจุดเข้าเดียว ทีมจึง review side effect และ regression ได้ง่ายขึ้น
+
+## องค์ประกอบหลักของ Service Layer
+
+- Use case method: ชื่อ action เช่น submitCreditLimitRequest
+- Input contract: data ที่ UI หรือ API ส่งเข้ามา
+- Authorization check: role, permission และ scope
+- Domain rule: เงื่อนไขธุรกิจที่ต้องผ่าน
+- Transaction boundary: write หลายตารางต้องสำเร็จหรือ rollback ด้วยกัน
+- Side effect: audit log, notification, integration หรือ event
+
+## Case ตัวอย่าง: approve credit limit request
+
+เมื่อ approver กด approve ระบบไม่ได้แค่เปลี่ยน status แต่ต้องเช็ก role, scope, amount limit, self-approval rule และ current state
+
+จากนั้น service ต้อง update request, เขียน audit log, อาจสร้าง notification และ commit transaction เดียวกัน
+
+ถ้า action นี้กระจายอยู่หลาย component จะยากมากที่จะตอบว่า release ใหม่ยังรักษา rule เดิมครบหรือไม่
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+Service Layer อยู่ระหว่าง requirement กับ implementation detail
+
+- User Story ให้ชื่อ use case และ acceptance criteria
+- RBAC ให้ permission check ที่ต้องทำก่อน action
+- Database Indexing ช่วย query ที่ service ใช้บ่อย
+- Acceptance Testing ยืนยันว่า service ทำตาม business rule
+- Audit Log เป็น side effect ที่ service ต้องสร้างให้ครบ
+
+## Common Mistakes
+
+- ใส่ logic สำคัญไว้ใน UI แล้ว backend กลายเป็น pass-through
+- ทำ service ใหญ่เกินไปจนกลายเป็น god object
+- ลืม transaction boundary เมื่อ action update หลาย resource
+- ใช้ service เพื่อซ่อน SQL ทุกอย่าง แต่ไม่ทำให้ use case ชัดขึ้น
+- ไม่แยก domain rule กับ infrastructure detail ทำให้ test ยาก
+
+## Checklist ตอนออกแบบ Service Layer
+
+- ตั้งชื่อ method ตาม business action ไม่ใช่ตาม table
+- validate input ก่อนเข้า domain rule
+- เช็ก authorization ใน backend ทุกครั้ง
+- กำหนด transaction boundary ให้ชัด
+- บันทึก audit log สำหรับ action สำคัญ
+- เขียน test ให้ครอบคลุม allow, deny และ failure path
+
+<Callout type="enterprise" title="บริบท enterprise">
+  สำหรับ workflow สำคัญ service method หนึ่งควรตอบได้ว่าใครเรียกได้ state ไหนเปลี่ยนอย่างไร data ไหนถูกเขียน และ audit log อะไรเกิดขึ้น
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน RBAC เพื่อจัด permission check แล้วอ่าน Database Indexing เพื่อดูว่า query ของ use case สำคัญควรถูกสนับสนุนด้วย schema อย่างไร

@@ -1,0 +1,68 @@
+## What a User Story is
+
+A User Story describes a requirement from the perspective of the person who needs the system. It names who needs something, what they want to do, and why it matters to the business.
+
+The point is not the sentence template. The point is shared understanding of the user, goal, workflow, and acceptance criteria.
+
+<Callout type="definition" title="Short version">
+  A User Story connects a business need to scope that can be designed, tested, and delivered.
+</Callout>
+
+## Why it matters in enterprise systems
+
+In enterprise internal tools, one requirement often touches roles, permissions, data, reports, and approval flow at the same time.
+
+If a story only lists screens or fields, the team may deliver UI without supporting the real process.
+
+A clear story helps developers, QA, designers, and stakeholders discuss the same workflow before solution design begins.
+
+## Core parts of a User Story
+
+- Actor: who uses or is affected by the feature
+- Goal: the action they need to take in the workflow
+- Value: the business outcome or risk reduction
+- Context: the state or scenario where it happens
+- Acceptance criteria: how the team knows it works
+- Constraint: role, policy, data, or compliance limits
+
+## Example case: credit limit change request
+
+As a sales manager, I want to submit a credit limit change request so that finance can review customer risk before the new limit is applied.
+
+That story is incomplete without acceptance criteria. The request needs a reason, may need attachments, cannot be edited after submit, and cannot be approved by its own requester.
+
+With criteria in place, the story connects naturally to workflow, RBAC, permission matrix, database schema, and acceptance tests.
+
+## How it connects to other topics
+
+User Story is an entry point for many SEA topics because it turns business language into design input.
+
+- Approval Workflow turns the story into states and transitions.
+- Acceptance Testing turns criteria into test scenarios.
+- Workflow Screen Design turns the task into screens and action states.
+- Database Indexing may follow from frequent queries implied by the story.
+
+## Common mistakes
+
+- Writing developer tasks such as "build the form" without a business goal
+- Forgetting negative cases such as reject, return, expired, duplicate, or no permission
+- Leaving role and scope unclear, forcing RBAC decisions later
+- Writing criteria too broadly for QA to verify
+- Splitting stories away from the workflow they belong to
+
+## Design checklist
+
+- Name the real actor, not only the team requesting the work.
+- Write the goal as an action in a workflow.
+- State the business outcome or risk being reduced.
+- Break acceptance criteria into verifiable scenarios.
+- Include related role, permission, and state rules.
+- Connect the story to data, reporting, notifications, or audit logs when they matter.
+
+<Callout type="tip" title="Practical framing">
+  Start with "who needs to decide what from this information" before breaking the work into screens, fields, and validation.
+</Callout>
+
+## Read next
+
+Read Approval Workflow next to see how a story becomes states. Then read Acceptance Testing to turn criteria into regression protection.

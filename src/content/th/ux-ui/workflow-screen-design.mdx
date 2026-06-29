@@ -1,0 +1,69 @@
+## Workflow Screen Design คืออะไร
+
+Workflow Screen Design คือการออกแบบหน้าจอสำหรับงานที่มีสถานะ ขั้นตอน สิทธิ์ และ action หลายแบบ เช่น request, approval หรือ review queue
+
+เป้าหมายไม่ใช่แค่ทำ form ให้สวย แต่ทำให้ผู้ใช้รู้ว่าตอนนี้งานอยู่ไหน ทำอะไรต่อได้ และทำไมบาง action ถูกจำกัด
+
+<Callout type="definition" title="จำสั้น ๆ">
+  หน้าจอ workflow ที่ดีทำให้ state, next action, permission และ evidence อ่านออกโดยไม่ต้องถามคนดูแลระบบ
+</Callout>
+
+## ทำไมสำคัญในระบบองค์กร
+
+Internal tools มักถูกใช้ซ้ำทุกวันโดยคนที่ต้องตัดสินใจเร็วและผิดพลาดไม่ได้
+
+ถ้า UI ซ่อนสถานะหรือเหตุผลของการ deny action ผู้ใช้จะเปิด ticket ถาม support หรือหาทางลัดนอกระบบ
+
+หน้าจอที่ดีช่วยลด training, ลด error และทำให้ rule ของระบบโปร่งใสมากขึ้น
+
+## องค์ประกอบหลักของ Workflow Screen
+
+- Status indicator: งานอยู่ state ไหน
+- Primary action: action ถัดไปที่ role นี้ทำได้
+- Disabled reason: เหตุผลเมื่อ action ทำไม่ได้
+- Context panel: ข้อมูลประกอบการตัดสินใจ
+- History: action ก่อนหน้า comment และ audit trail
+- Error state: ข้อความเมื่อ validation หรือ permission ไม่ผ่าน
+
+## Case ตัวอย่าง: หน้ารายละเอียด credit limit request
+
+Requester ควรเห็นว่า request อยู่ draft หรือ submitted และ action ที่ทำได้คือ edit, submit หรือ view history ตาม state
+
+Approver ควรเห็น risk context, current limit, requested limit, policy note และปุ่ม approve/reject เฉพาะเมื่ออยู่ใน scope
+
+Auditor ควรเห็นข้อมูลและ audit trail แต่ไม่ควรเห็นปุ่มที่ทำให้เข้าใจว่าสามารถเปลี่ยน workflow ได้
+
+## เชื่อมกับหัวข้ออื่นยังไง
+
+UX/UI เป็นที่ที่ model ทั้งระบบปรากฏต่อคนใช้
+
+- User Story ให้ goal และ scenario ของหน้าจอ
+- Approval Workflow ให้ state และ transition
+- RBAC ให้ action ที่ role ทำได้
+- Acceptance Testing ตรวจว่าหน้าจอรองรับ scenario สำคัญ
+- Audit Log ช่วยแสดง history และ evidence
+
+## Common Mistakes
+
+- ซ่อนปุ่มโดยไม่อธิบายว่า user ขาด permission หรือ state ไม่ถูกต้อง
+- ใช้สีอย่างเดียวบอก status โดยไม่มี label
+- ทำ action สำคัญหลายปุ่มเท่ากันจนผู้ใช้ตัดสินใจยาก
+- ไม่แสดงข้อมูลที่ approver ต้องใช้ตัดสินใจ
+- แยก UI state ออกจาก backend rule ทำให้หน้าแสดงว่าทำได้แต่ API ปฏิเสธ
+
+## Checklist ตอนออกแบบ Workflow Screen
+
+- แสดง status และ owner ของงานชัดเจน
+- ให้ primary action เด่นกว่ารอง
+- ใส่เหตุผลเมื่อ action ถูก disabled หรือ denied
+- แสดง context ที่จำเป็นต่อการตัดสินใจ
+- แยก view ของ requester, approver, admin และ auditor ตาม role
+- ตรวจหน้าจอด้วย acceptance scenario สำคัญ
+
+<Callout type="tip" title="วิธีคิดที่ใช้ได้จริง">
+  ถ้าผู้ใช้ต้องถามว่า "ตอนนี้ต้องทำอะไรต่อ" หน้าจอยังไม่สื่อ workflow พอ
+</Callout>
+
+## อ่านต่อจากหัวข้อนี้
+
+อ่าน Approval Workflow เพื่อวาง state model แล้วอ่าน RBAC เพื่อทำให้ UI สะท้อนสิทธิ์จริงจาก backend rule

@@ -1,9 +1,22 @@
+import { getAreasByLocale } from "./areas";
 import {
   getTopicByRoute,
   getTopicNeighbors,
   getTopicsByLocale,
   getTopicsByLocaleAndArea,
 } from "./topics";
+
+const expectedAreaTopics = {
+  requirement: ["user-story"],
+  process: ["approval-workflow"],
+  architecture: ["rbac", "permission-matrix"],
+  "code-design": ["service-layer"],
+  database: ["database-indexing"],
+  testing: ["acceptance-testing"],
+  deployment: ["deployment-pipeline"],
+  security: ["audit-log"],
+  "ux-ui": ["workflow-screen-design"],
+} as const;
 
 describe("topic catalog", () => {
   it("resolves the Thai RBAC topic by route", () => {
@@ -32,40 +45,46 @@ describe("topic catalog", () => {
   it("lists only topics for the requested locale", () => {
     const thaiTopics = getTopicsByLocale("th");
 
-    expect(thaiTopics).toHaveLength(4);
+    expect(thaiTopics).toHaveLength(10);
     expect(thaiTopics[0]?.locale).toBe("th");
   });
 
+  it("covers every Atlas Area with at least one topic in each locale", () => {
+    for (const locale of ["th", "en"] as const) {
+      const areas = getAreasByLocale(locale);
+
+      for (const area of areas) {
+        expect(getTopicsByLocaleAndArea(locale, area.id).length).toBeGreaterThan(
+          0,
+        );
+      }
+    }
+  });
+
   it("lists only topics for the requested locale and area", () => {
-    const architectureTopics = getTopicsByLocaleAndArea("th", "architecture");
-    const processTopics = getTopicsByLocaleAndArea("th", "process");
-    const securityTopics = getTopicsByLocaleAndArea("th", "security");
-    const testingTopics = getTopicsByLocaleAndArea("th", "testing");
-
-    expect(architectureTopics.map((topic) => topic.slug)).toEqual([
-      "rbac",
-      "permission-matrix",
-    ]);
-    expect(processTopics.map((topic) => topic.slug)).toEqual([
-      "approval-workflow",
-    ]);
-    expect(securityTopics.map((topic) => topic.slug)).toEqual(["audit-log"]);
-    expect(testingTopics).toEqual([]);
+    for (const [area, slugs] of Object.entries(expectedAreaTopics)) {
+      expect(
+        getTopicsByLocaleAndArea("th", area as keyof typeof expectedAreaTopics).map(
+          (topic) => topic.slug,
+        ),
+      ).toEqual(slugs);
+    }
   });
 
-  it("resolves the initial RBAC related topics as real routes", () => {
-    expect(getTopicByRoute("th", "security", "audit-log")?.id).toBe(
-      "audit-log",
-    );
-    expect(getTopicByRoute("th", "process", "approval-workflow")?.id).toBe(
-      "approval-workflow",
-    );
-    expect(
-      getTopicByRoute("th", "architecture", "permission-matrix")?.id,
-    ).toBe("permission-matrix");
+  it("resolves every related topic id in each locale", () => {
+    for (const locale of ["th", "en"] as const) {
+      const localeTopics = getTopicsByLocale(locale);
+      const localeTopicIds = new Set(localeTopics.map((topic) => topic.id));
+
+      for (const topic of localeTopics) {
+        for (const relatedTopicId of topic.relatedTopicIds) {
+          expect(localeTopicIds.has(relatedTopicId)).toBe(true);
+        }
+      }
+    }
   });
 
-  it("keeps seeded related topics shared across Thai and English", () => {
+  it("keeps seeded topic ids shared across Thai and English", () => {
     const thaiIds = getTopicsByLocale("th").map((topic) => topic.id);
     const englishIds = getTopicsByLocale("en").map((topic) => topic.id);
 
