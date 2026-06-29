@@ -1,5 +1,6 @@
 import { Link, Navigate, Outlet, useLocation, useParams } from "react-router";
 
+import { getAreasByLocale } from "@/data/areas";
 import { getTopicsByLocale } from "@/data/topics";
 import { defaultLocale, isLocale, otherLocale } from "@/lib/locales";
 
@@ -24,7 +25,9 @@ export function AppShell() {
 
   const locale = localeParam;
   const topics = getTopicsByLocale(locale);
+  const areas = getAreasByLocale(locale);
   const alternateLocale = otherLocale(locale);
+  const activeArea = location.pathname.split("/").filter(Boolean)[1];
 
   return (
     <div className="app-shell">
@@ -45,16 +48,41 @@ export function AppShell() {
       </header>
       <div className="atlas-layout">
         <aside className="sidebar" aria-label="Topic tree">
-          <p className="sidebar__label">Architecture</p>
           <nav>
-            {topics.map((topic) => (
-              <Link
-                key={`${topic.locale}-${topic.id}`}
-                to={`/${topic.locale}/${topic.area}/${topic.slug}`}
-              >
-                {topic.title}
-              </Link>
-            ))}
+            {areas.map((area) => {
+              const areaTopics = topics.filter((topic) => topic.area === area.id);
+              const isActiveArea = activeArea === area.id;
+
+              return (
+                <section
+                  className={`sidebar-area${isActiveArea ? " is-active" : ""}`}
+                  key={area.id}
+                >
+                  <Link
+                    aria-current={isActiveArea ? "page" : undefined}
+                    className="sidebar-area__label"
+                    to={`/${locale}/${area.id}`}
+                  >
+                    <span>{area.label}</span>
+                    {areaTopics.length > 0 ? (
+                      <small>{areaTopics.length}</small>
+                    ) : null}
+                  </Link>
+                  {isActiveArea && areaTopics.length > 0 ? (
+                    <div className="sidebar-area__topics">
+                      {areaTopics.map((topic) => (
+                        <Link
+                          key={`${topic.locale}-${topic.id}`}
+                          to={`/${topic.locale}/${topic.area}/${topic.slug}`}
+                        >
+                          {topic.title}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
+                </section>
+              );
+            })}
           </nav>
         </aside>
         <main className="content-area">

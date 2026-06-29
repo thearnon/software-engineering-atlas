@@ -1,5 +1,6 @@
 import { Link, Navigate, useParams } from "react-router";
 
+import { getAreaById } from "@/data/areas";
 import { rbacPermissions } from "@/data/rbac-permissions";
 import { getTopicByRoute } from "@/data/topics";
 import { PermissionMatrix } from "@/viewer/PermissionMatrix";
@@ -20,17 +21,21 @@ export function TopicRoute() {
 
   const Content = topic.Content;
   const alternateLocale = otherLocale(localeParam);
+  const areaMeta = getAreaById(topic.area, localeParam);
+  const areaLabel = areaMeta?.label ?? topic.area;
 
   return (
     <article className="topic-page">
       <nav className="breadcrumb" aria-label="Breadcrumb">
-        <Link to={`/${localeParam}`}>Home</Link>
-        <span>{topic.area}</span>
+        <Link to={`/${localeParam}`}>
+          {localeParam === "th" ? "หน้าแรก" : "Home"}
+        </Link>
+        <Link to={`/${localeParam}/${topic.area}`}>{areaLabel}</Link>
         <span>{topic.title}</span>
       </nav>
       <header className="topic-header">
         <div>
-          <p>{topic.area}</p>
+          <p>{areaLabel}</p>
           <h1>{topic.title}</h1>
           <span>{topic.summary}</span>
         </div>

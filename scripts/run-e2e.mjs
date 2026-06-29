@@ -5,24 +5,46 @@ const host = "127.0.0.1";
 const port = "4173";
 const baseUrl = `http://${host}:${port}`;
 
-const server = spawn(
-  process.execPath,
-  ["node_modules/vite/bin/vite.js", "preview", "--host", host, "--port", port],
-  {
-    stdio: "inherit",
-    windowsHide: true,
-  },
-);
-
 let serverStopped = false;
+let server;
 
-server.on("exit", (code) => {
-  serverStopped = true;
+function runBuild() {
+  const command = process.platform === "win32" ? "cmd.exe" : "npm";
+  const args =
+    process.platform === "win32"
+      ? ["/d", "/s", "/c", "npm.cmd", "run", "build"]
+      : ["run", "build"];
 
-  if (code !== 0 && code !== null) {
-    console.error(`Vite preview exited early with code ${code}.`);
-  }
-});
+  return new Promise((resolve) => {
+    const child = spawn(command, args, {
+      stdio: "inherit",
+      windowsHide: true,
+    });
+
+    child.on("exit", (code) => {
+      resolve(code ?? 1);
+    });
+  });
+}
+
+function startServer() {
+  server = spawn(
+    process.execPath,
+    ["node_modules/vite/bin/vite.js", "preview", "--host", host, "--port", port],
+    {
+      stdio: "inherit",
+      windowsHide: true,
+    },
+  );
+
+  server.on("exit", (code) => {
+    serverStopped = true;
+
+    if (code !== 0 && code !== null) {
+      console.error(`Vite preview exited early with code ${code}.`);
+    }
+  });
+}
 
 async function waitForServer() {
   const deadline = Date.now() + 30_000;
@@ -66,14 +88,21 @@ function runPlaywright() {
 }
 
 try {
-  await waitForServer();
-  const exitCode = await runPlaywright();
-  process.exitCode = exitCode;
+  const buildExitCode = await runBuild();
+
+  if (buildExitCode !== 0) {
+    process.exitCode = buildExitCode;
+  } else {
+    startServer();
+    await waitForServer();
+    const exitCode = await runPlaywright();
+    process.exitCode = exitCode;
+  }
 } catch (error) {
   console.error(error);
   process.exitCode = 1;
 } finally {
-  if (!serverStopped) {
+  if (server !== undefined && !serverStopped) {
     server.kill();
   }
 }

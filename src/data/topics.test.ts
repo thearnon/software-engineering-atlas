@@ -1,4 +1,8 @@
-import { getTopicByRoute, getTopicsByLocale } from "./topics";
+import {
+  getTopicByRoute,
+  getTopicsByLocale,
+  getTopicsByLocaleAndArea,
+} from "./topics";
 
 describe("topic catalog", () => {
   it("resolves the Thai RBAC topic by route", () => {
@@ -29,5 +33,13 @@ describe("topic catalog", () => {
 
     expect(thaiTopics).toHaveLength(1);
     expect(thaiTopics[0]?.locale).toBe("th");
+  });
+
+  it("lists only topics for the requested locale and area", () => {
+    const architectureTopics = getTopicsByLocaleAndArea("th", "architecture");
+    const testingTopics = getTopicsByLocaleAndArea("th", "testing");
+
+    expect(architectureTopics.map((topic) => topic.slug)).toEqual(["rbac"]);
+    expect(testingTopics).toEqual([]);
   });
 });

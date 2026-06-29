@@ -3,18 +3,10 @@ import type { MDXProps } from "mdx/types";
 
 import EnRbacContent from "@/content/en/architecture/rbac.mdx";
 import ThRbacContent from "@/content/th/architecture/rbac.mdx";
+import type { AtlasArea } from "@/data/areas";
 import type { Locale } from "@/lib/locales";
 
-export type AtlasArea =
-  | "process"
-  | "requirement"
-  | "architecture"
-  | "code-design"
-  | "database"
-  | "testing"
-  | "deployment"
-  | "security"
-  | "ux-ui";
+export type { AtlasArea } from "@/data/areas";
 
 export type ContentLayer = "article" | "reference" | "viewer";
 
@@ -62,6 +54,15 @@ export const topics = [
 
 export function getTopicsByLocale(locale: Locale): readonly TopicEntry[] {
   return topics.filter((topic) => topic.locale === locale);
+}
+
+export function getTopicsByLocaleAndArea(
+  locale: Locale,
+  area: AtlasArea,
+): readonly TopicEntry[] {
+  return topics.filter(
+    (topic) => topic.locale === locale && topic.area === area,
+  );
 }
 
 export function getTopicByRoute(
