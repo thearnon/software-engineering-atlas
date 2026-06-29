@@ -81,7 +81,7 @@ Current coverage:
 
 - Thai and English MDX content paths exist
 - Topic metadata shares ids across locales
-- Locale switch exists for topic routes
+- Single sticky top-nav locale switch exists across locale/topic routes; duplicate footer and topic-header controls were removed
 - Content is localized per page instead of mixing full Thai and English copies
 
 ## Phase 4: First SEA Topic

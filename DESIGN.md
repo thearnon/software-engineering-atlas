@@ -37,7 +37,6 @@ SEA ควรรู้สึกเหมือน atlas หรือแผนท
 | Danger | `danger` | Red 500 |
 | Info | `info` | Sky 500 |
 | Highlight (search) | `highlight` | Yellow 200 (dark) / Yellow 300 (light) |
-| Fallback badge | `fallback` | Zinc 600 bg + Zinc 300 text |
 
 ### Typography
 
@@ -91,7 +90,7 @@ SEA ควรรู้สึกเหมือน atlas หรือแผนท
 │   (collapsible)                                     │
 │              │                                       │
 ├──────────────┴──────────────────────────────────────┤
-│  Footer: links, locale, attribution                  │
+│  Footer: attribution                                 │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -193,9 +192,10 @@ Atlas Areas ที่ใช้เป็น URL segment:
 
 ## 6. Bilingual UX
 
-- **Locale switcher**: ใน top nav - label: `ไทย` / `EN`
-- **Switch behavior**: พาไปยัง locale อื่นของ topic เดิมถ้ามี translation ถ้าไม่มีพากลับ homepage
-- **Fallback badge**: ถ้าหน้าภาษาอังกฤษยังไม่มี ให้แสดง Thai version พร้อม badge `"ยังไม่มีเวอร์ชันภาษาอังกฤษ"` (และในทางกลับกัน)
+- **Locale switcher**: อยู่ใน sticky top nav เท่านั้น - label: `ไทย` / `EN`
+- **Avoid duplicate controls**: ไม่ใส่ language links ซ้ำใน footer และไม่ใส่ locale card/badge ใน topic header
+- **Current switch behavior**: ปุ่ม top nav สลับ leading locale segment ของ route ปัจจุบัน เช่น `/th/architecture/rbac` -> `/en/architecture/rbac`
+- **Missing translation behavior**: ยังไม่มี per-topic fallback badge ใน UI; ถ้าจะเพิ่ม fallback ภายหลังให้ทำที่ route resolver/search metadata ไม่ใช่เพิ่มปุ่มสลับภาษาอีกจุด
 - **Technical terms**: คงไว้เป็นภาษาอังกฤษในทั้งสองภาษา เช่น `RBAC`, `workflow`, `schema`
 
 ---
@@ -450,7 +450,6 @@ Area header ต้องดึงข้อมูลจาก typed data file ไ
 | `area` | string | area slug |
 | `areaLabel` | string | ชื่อ area ตาม locale สำหรับแสดงใน card |
 | `layers` | `{ article: boolean, reference: boolean, viewer: boolean }` | layer ที่มี content แล้ว |
-| `hasTranslation` | boolean | มี content ใน locale อื่นหรือเปล่า |
 | `href` | string | route ไปยัง topic |
 
 **Visual:**
@@ -459,7 +458,7 @@ Area header ต้องดึงข้อมูลจาก typed data file ไ
 - Summary excerpt (2 lines max, ellipsis)
 - Area tag (chip style) แสดง `areaLabel` ไม่ใช่ slug
 - Layer badges: `Article`, `Reference`, `Viewer` — แสดงเฉพาะที่มี, greyed-out ถ้าไม่มี
-- Fallback badge: `"ไม่มีเวอร์ชัน EN"` หรือ `"No Thai version"` ตาม locale ปัจจุบัน
+- ไม่แสดง translation/fallback badge ใน TopicCard; language switching รวมไว้ที่ top nav
 
 ---
 

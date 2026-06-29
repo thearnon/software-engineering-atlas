@@ -15,7 +15,8 @@ SEA เป็น bilingual product ตั้งแต่ต้น:
 
 ข้อกำหนดสำคัญ:
 
-- ระบบในอนาคตควรมี language switch ระหว่างไทยกับอังกฤษ
+- ระบบมี language switch ระหว่างไทยกับอังกฤษใน sticky top nav จุดเดียว (`src/components/AppShell.tsx`)
+- หลีกเลี่ยงการเพิ่ม language switch ซ้ำใน footer, topic header, หรือ TopicCard เว้นแต่ product direction เปลี่ยนชัดเจน
 - หน้าไทยและหน้าอังกฤษควรเป็น localized content ที่สัมพันธ์กัน ไม่ใช่ copy สองภาษาปนเต็มหน้าเดียวกันเสมอไป
 - ภาษาไทยเป็น default เพราะเป็นภาษาหลักในการจัดระบบความคิดของ Ken
 - ภาษาอังกฤษช่วยให้ project public-ready และใช้ technical vocabulary ได้ตรงกับ software industry
