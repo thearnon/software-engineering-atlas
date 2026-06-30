@@ -95,6 +95,18 @@ The repository currently includes an initial SEA app foundation:
 - Local metadata search index
 - Vitest unit tests and Playwright e2e smoke tests
 
+### Navigation, theming, and UX
+
+- Light and dark themes with a top-nav toggle, CSS design tokens, and a no-flash theme bootstrap
+- Sarabun, Inter, and JetBrains Mono web fonts for Thai-first reading
+- Responsive shell: collapsible area sidebar with a mobile drawer, an on-this-page table of contents, and a prev/next topic pager
+- Homepage static lifecycle map and per-area icons
+- Local metadata search wired into the homepage hero and a global command palette (`Cmd/Ctrl+K`)
+- MDX `Callout` components (note, tip, warning, enterprise, definition)
+- Dedicated 404 / not-found page that keeps navigation and search in place
+- Per-page title, description, Open Graph, and `hreflang` metadata
+- Accessibility basics: visible focus rings, a skip-to-content link, and `prefers-reduced-motion` support
+
 ## Useful Commands
 
 On Windows PowerShell, use `npm.cmd` if `npm.ps1` is blocked by execution policy.

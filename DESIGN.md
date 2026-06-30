@@ -94,7 +94,7 @@ SEA ควรรู้สึกเหมือน atlas หรือแผนท
 └─────────────────────────────────────────────────────┘
 ```
 
-- **Top nav**: sticky, height ~56px, มี logo (SEA), search, locale switch (ไทย / EN), dark/light toggle
+- **Top nav**: sticky, height ~56px, มี logo (SEA), command-palette search (`⌘K` / `Ctrl+K`), locale switch (ไทย / EN), dark/light toggle
 - **Sidebar**: collapsible topic tree จัดตาม Atlas Areas ไม่จัดตามวันที่ - collapse เป็น hamburger บน mobile
 - **Content area**: centered, max-width ขึ้นกับ content layer (ดู Section 5)
 - **Atlas map view** (Phase 5+): full-width canvas สำหรับ knowledge graph - ซ่อน sidebar เมื่อเปิด
@@ -154,6 +154,7 @@ Route contract:
 - `/{locale}` - homepage ของ locale นั้น
 - `/{locale}/{area}` - area index page
 - `/{locale}/{area}/{topic}` - topic page
+- route ที่ไม่ตรง (area หรือ topic ที่ไม่มี) - แสดงหน้า 404 ภายใน shell พร้อม search และลิงก์กลับ ไม่ redirect เงียบ
 
 Atlas Areas ที่ใช้เป็น URL segment:
 
@@ -170,8 +171,10 @@ Atlas Areas ที่ใช้เป็น URL segment:
 ### Wayfinding
 
 - **Breadcrumb**: Home > [Area] สำหรับ area index และ Home > [Area] > [Topic] สำหรับ topic page
+- **On this page**: topic page มี table of contents ฝั่งขวาแบบ scroll-spy (ซ่อนบนจอ < lg)
+- **Prev / next pager**: ท้าย topic page ลิงก์หัวข้อก่อนหน้า/ถัดไปตามลำดับใน area
 - **Related topics**: section ล่างสุดของทุก article และ reference - เชื่อมตาม relationship types (`prerequisite`, `related`, `leads-to` ฯลฯ)
-- **Search**: locale-aware - Phase 1 ใช้ local metadata index, Phase 2 ใช้ Pagefind full-text static search
+- **Search**: locale-aware - Phase 1 ใช้ local metadata index (homepage hero + command palette `⌘K`), Phase 2 ใช้ Pagefind full-text static search
 - ไม่มี archive ตามวันที่ ไม่มี "latest posts"
 
 ---

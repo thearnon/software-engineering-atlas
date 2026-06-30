@@ -63,6 +63,15 @@ Deliverables:
 - Typed area metadata for 9 Atlas Areas
 - Homepage area grid and static lifecycle map
 
+Current coverage:
+
+- App shell มี top nav (brand, command-palette search `⌘K`, locale switch, theme toggle), area sidebar แบบ collapse + mobile drawer, และ footer
+- Light/dark theme ผ่าน CSS design tokens + no-flash bootstrap; โหลดฟอนต์ Sarabun/Inter/JetBrains Mono
+- Topic page มี on-this-page TOC (scroll-spy) + prev/next pager และแสดง viewer แบบเต็มความกว้าง
+- Homepage มี static lifecycle map + area icons
+- มีหน้า 404 ภายใน shell และ per-page metadata (title/description/Open Graph/hreflang)
+- Accessibility พื้นฐาน: focus-visible, skip-to-content link, prefers-reduced-motion
+
 ## Phase 3: Bilingual Content Structure
 
 Goal: ทำให้ SEA รองรับภาษาไทยและอังกฤษเป็น first-class content model
@@ -144,6 +153,8 @@ Current coverage:
 - The first matrix now follows the RBAC credit limit request case instead of using generic actions
 - Viewer cells can render notes for scoped or policy-based permission decisions
 - Unit/component tests cover schema and viewer behavior
+- A second viewer, `LifecycleMap` (static SDLC + area-relationship SVG), renders on the homepage
+- MDX `Callout` components (note, tip, warning, enterprise, definition) are available to the article and reference layers
 
 ## Phase 6: Search Upgrade
 
@@ -177,6 +188,11 @@ Deliverables:
 - Basic metadata and SEO
 - Public URL
 - Lightweight contribution or authoring notes for future agent-assisted content
+
+Current coverage:
+
+- Per-page title, description, Open Graph, และ hreflang alternates ตั้งผ่าน client-side แล้ว (`usePageMeta`)
+- Production build ผ่าน `npm run build`; full SEO + indexable HTML ยังรอ static pre-rendering / SSG (ดู Deferred / Backlog)
 
 ## Deferred / Backlog
 

@@ -95,6 +95,18 @@ Boundary สำคัญ:
 - Local metadata search index
 - Vitest unit tests และ Playwright e2e smoke tests
 
+### Navigation, theming, และ UX
+
+- Light/dark theme พร้อมปุ่มสลับใน top nav, CSS design tokens, และ no-flash theme bootstrap
+- โหลดฟอนต์ Sarabun, Inter, และ JetBrains Mono เพื่อการอ่านแบบ Thai-first
+- Responsive shell: area sidebar แบบ collapse + drawer บนมือถือ, on-this-page TOC, และ prev/next pager ของ topic
+- Static lifecycle map และ area icons บนหน้าแรก
+- Local metadata search ต่อเข้ากับ homepage hero และ global command palette (`Cmd/Ctrl+K`)
+- MDX `Callout` components (note, tip, warning, enterprise, definition)
+- หน้า 404 / not-found ที่ยังคง navigation และ search ไว้
+- Per-page title, description, Open Graph, และ `hreflang` metadata
+- Accessibility พื้นฐาน: focus ring ที่มองเห็น, skip-to-content link, และรองรับ `prefers-reduced-motion`
+
 ## Useful Commands
 
 บน Windows PowerShell ให้ใช้ `npm.cmd` ถ้า `npm.ps1` ถูก block จาก execution policy
